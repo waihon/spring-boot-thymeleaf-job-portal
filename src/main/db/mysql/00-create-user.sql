@@ -1,5 +1,5 @@
 -- Drop user first if they exist
-DROP USER IF EXISTS 'jobportal'@'%';
+DROP USER IF EXISTS 'jobportal'@'localhost';
 
 -- Now create user with prop privileges
 CREATE USER 'jobportal'@'localhost' IDENTIFIED BY 'jobportal';
