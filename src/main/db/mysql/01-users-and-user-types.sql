@@ -19,7 +19,7 @@ CREATE TABLE `users` (
   `registration_date` datetime(6) DEFAULT NULL,
   `user_type_id` int DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`),
-  KEY `FK5snet2ikvi03wd4rabd40ckdl` (`user_type_id`),
-  CONSTRAINT `FK5snet2ikvi03wd4rabd40ckdl` FOREIGN KEY (`user_type_id`) REFERENCES `user_types` (`user_type_id`)
+  UNIQUE KEY `uk_users_email` (`email`),
+  KEY `fk_users_user_type_id` (`user_type_id`),
+  CONSTRAINT `fk_users_user_type_id` FOREIGN KEY (`user_type_id`) REFERENCES `user_types` (`user_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
