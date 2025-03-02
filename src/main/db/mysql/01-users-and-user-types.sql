@@ -2,13 +2,13 @@ DROP DATABASE  IF EXISTS `jobportal`;
 CREATE DATABASE `jobportal`;
 USE `jobportal`;
 
-CREATE TABLE `users_type` (
+CREATE TABLE `user_types` (
   `user_type_id` int NOT NULL AUTO_INCREMENT,
   `user_type_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_type_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `users_type` VALUES (1,'Recruiter'),(2,'Job Seeker');
+INSERT INTO `user_types` VALUES (1,'Recruiter'),(2,'Job Seeker');
 
 
 CREATE TABLE `users` (
@@ -21,5 +21,5 @@ CREATE TABLE `users` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `UK_6dotkott2kjsp8vw4d0m25fb7` (`email`),
   KEY `FK5snet2ikvi03wd4rabd40ckdl` (`user_type_id`),
-  CONSTRAINT `FK5snet2ikvi03wd4rabd40ckdl` FOREIGN KEY (`user_type_id`) REFERENCES `users_type` (`user_type_id`)
+  CONSTRAINT `FK5snet2ikvi03wd4rabd40ckdl` FOREIGN KEY (`user_type_id`) REFERENCES `user_types` (`user_type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
