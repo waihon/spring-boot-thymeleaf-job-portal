@@ -1,4 +1,4 @@
-package com.waihon.spring_boot_thymeleaf_job_portal;
+package com.waihon.springboot.thymeleaf.jobportal;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
