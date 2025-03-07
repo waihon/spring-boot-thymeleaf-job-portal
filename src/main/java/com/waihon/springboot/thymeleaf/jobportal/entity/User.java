@@ -90,4 +90,16 @@ public class User {
         this.userTypeId = userTypeId;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", isActive=" + isActive +
+                ", registrationDate=" + registrationDate +
+                ", userTypeId=" + userTypeId +
+                '}';
+    }
+
 }
