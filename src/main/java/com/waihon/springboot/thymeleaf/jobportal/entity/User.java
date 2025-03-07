@@ -42,4 +42,52 @@ public class User {
         this.userTypeId = userTypeId;
     }
 
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public @NotEmpty String getPassword() {
+        return password;
+    }
+
+    public void setPassword(@NotEmpty String password) {
+        this.password = password;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public Date getRegistrationDate() {
+        return registrationDate;
+    }
+
+    public void setRegistrationDate(Date registrationDate) {
+        this.registrationDate = registrationDate;
+    }
+
+    public UserType getUserTypeId() {
+        return userTypeId;
+    }
+
+    public void setUserTypeId(UserType userTypeId) {
+        this.userTypeId = userTypeId;
+    }
+
 }
