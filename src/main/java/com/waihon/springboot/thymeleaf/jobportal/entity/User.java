@@ -29,4 +29,17 @@ public class User {
     @JoinColumn(name = "userTypeId", referencedColumnName = "userTypeId")
     private UserType userTypeId;
 
+    public User() {
+    }
+
+    public User(int userId, String email, String password, boolean isActive,
+                Date registrationDate, UserType userTypeId) {
+        this.userId = userId;
+        this.email = email;
+        this.password = password;
+        this.isActive = isActive;
+        this.registrationDate = registrationDate;
+        this.userTypeId = userTypeId;
+    }
+
 }
