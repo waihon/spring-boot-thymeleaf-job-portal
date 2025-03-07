@@ -50,4 +50,12 @@ public class UserType {
         this.users = users;
     }
 
+    @Override
+    public String toString() {
+        return "UserType{" +
+                "userTypeId=" + userTypeId +
+                ", userTypeName='" + userTypeName + '\'' +
+                '}';
+    }
+
 }
