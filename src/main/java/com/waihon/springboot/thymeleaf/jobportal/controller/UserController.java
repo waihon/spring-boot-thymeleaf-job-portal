@@ -2,6 +2,7 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
 import com.waihon.springboot.thymeleaf.jobportal.entity.UserType;
+import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserTypeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +17,12 @@ import java.util.List;
 public class UserController {
 
     private final UserTypeService userTypeService;
+    private final UserService userService;
 
     @Autowired
-    public UserController(UserTypeService userTypeService) {
+    public UserController(UserTypeService userTypeService, UserService userService) {
         this.userTypeService = userTypeService;
+        this.userService = userService;
     }
 
     @GetMapping("/register")
@@ -34,7 +37,7 @@ public class UserController {
 
     @PostMapping("/register/new")
     public String userRegistration(@Valid User user) {
-        System.out.println("User:: " + user);
+        userService.addNew(user);
 
         return "dashboard";
     }
