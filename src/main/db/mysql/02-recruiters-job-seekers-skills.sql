@@ -1,6 +1,6 @@
 USE `jobportal`;
 
-CREATE TABLE `recruiter_profile` (
+CREATE TABLE `recruiter_profiles` (
   `user_account_id` int NOT NULL,
   `city` varchar(255) DEFAULT NULL,
   `company` varchar(255) DEFAULT NULL,
@@ -13,7 +13,7 @@ CREATE TABLE `recruiter_profile` (
   CONSTRAINT `FK42q4eb7jw1bvw3oy83vc05ft6` FOREIGN KEY (`user_account_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `job_seeker_profile` (
+CREATE TABLE `job_seeker_profiles` (
   `user_account_id` int NOT NULL,
   `city` varchar(255) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
