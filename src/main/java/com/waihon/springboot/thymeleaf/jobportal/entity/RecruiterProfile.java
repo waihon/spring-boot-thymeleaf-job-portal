@@ -25,4 +25,20 @@ public class RecruiterProfile {
     @Column(nullable = true, length = 64)
     private String profilePhoto;
 
+    public RecruiterProfile() {
+    }
+
+    public RecruiterProfile(int userAccountId, User user, String firstName, String lastName,
+                            String city, String state, String country, String company, String profilePhoto) {
+        this.userAccountId = userAccountId;
+        this.user = user;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.company = company;
+        this.profilePhoto = profilePhoto;
+    }
+
 }
