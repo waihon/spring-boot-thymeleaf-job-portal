@@ -112,4 +112,20 @@ public class RecruiterProfile {
     public void setProfilePhoto(String profilePhoto) {
         this.profilePhoto = profilePhoto;
     }
+
+    @Override
+    public String toString() {
+        return "RecruiterProfile{" +
+                "userAccountId=" + userAccountId +
+                ", user=" + user +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", country='" + country + '\'' +
+                ", company='" + company + '\'' +
+                ", profilePhoto='" + profilePhoto + '\'' +
+                '}';
+    }
+
 }
