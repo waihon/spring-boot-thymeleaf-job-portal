@@ -30,4 +30,28 @@ public class JobSeekerProfile {
     @OneToMany(targetEntity = Skill.class, mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
     private List<Skill> skills;
 
+    public JobSeekerProfile() {
+    }
+
+    public JobSeekerProfile(User user) {
+        this.user = user;
+    }
+
+    public JobSeekerProfile(int userAccountId, User user, String firstName, String lastName,
+                            String city, String state, String country, String workAuthorization,
+                            String employmentType, String resume, String profilePhoto, List<Skill> skills) {
+        this.userAccountId = userAccountId;
+        this.user = user;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.city = city;
+        this.state = state;
+        this.country = country;
+        this.workAuthorization = workAuthorization;
+        this.employmentType = employmentType;
+        this.resume = resume;
+        this.profilePhoto = profilePhoto;
+        this.skills = skills;
+    }
+
 }
