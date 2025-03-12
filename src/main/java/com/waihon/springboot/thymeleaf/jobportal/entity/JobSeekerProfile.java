@@ -150,4 +150,21 @@ public class JobSeekerProfile {
         this.skills = skills;
     }
 
+    @Override
+    public String toString() {
+        return "JobSeekerProfile{" +
+                "userAccountId=" + userAccountId +
+                ", user=" + user +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", city='" + city + '\'' +
+                ", state='" + state + '\'' +
+                ", country='" + country + '\'' +
+                ", workAuthorization='" + workAuthorization + '\'' +
+                ", employmentType='" + employmentType + '\'' +
+                ", resume='" + resume + '\'' +
+                ", profilePhoto='" + profilePhoto + '\'' +
+                ", skills=" + skills +
+                '}';
+    }
 }
