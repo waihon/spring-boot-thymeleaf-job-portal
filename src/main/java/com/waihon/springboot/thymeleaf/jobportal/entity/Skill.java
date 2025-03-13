@@ -70,4 +70,15 @@ public class Skill {
         this.jobSeekerProfile = jobSeekerProfile;
     }
 
+    @Override
+    public String toString() {
+        return "Skill{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", experienceLevel='" + experienceLevel + '\'' +
+                ", yearsOfExperience='" + yearsOfExperience + '\'' +
+                ", jobSeekerProfile=" + jobSeekerProfile +
+                '}';
+    }
+
 }
