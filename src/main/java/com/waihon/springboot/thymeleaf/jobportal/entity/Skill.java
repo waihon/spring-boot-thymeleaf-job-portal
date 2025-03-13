@@ -30,4 +30,44 @@ public class Skill {
         this.jobSeekerProfile = jobSeekerProfile;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getExperienceLevel() {
+        return experienceLevel;
+    }
+
+    public void setExperienceLevel(String experienceLevel) {
+        this.experienceLevel = experienceLevel;
+    }
+
+    public String getYearsOfExperience() {
+        return yearsOfExperience;
+    }
+
+    public void setYearsOfExperience(String yearsOfExperience) {
+        this.yearsOfExperience = yearsOfExperience;
+    }
+
+    public int getJobSeekerProfile() {
+        return jobSeekerProfile;
+    }
+
+    public void setJobSeekerProfile(int jobSeekerProfile) {
+        this.jobSeekerProfile = jobSeekerProfile;
+    }
+
 }
