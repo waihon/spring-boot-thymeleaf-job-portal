@@ -27,7 +27,11 @@ public class JobSeekerProfile {
     @Column(nullable = true, length = 64)
     private String profilePhoto;
 
-    @OneToMany(targetEntity = Skill.class, mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL)
+    // targetEntity is not required as Java already infers Skill from List<Skill>.
+    // mappedBy refers to the actual field name in Skill, not the column name.
+    // orphanRemoval = true may be added to remove Skill records automatically
+    // if they are removed from the list in JobSeekerProfile.
+    @OneToMany(mappedBy = "jobSeekerProfile", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Skill> skills;
 
     public JobSeekerProfile() {

@@ -2,8 +2,6 @@ package com.waihon.springboot.thymeleaf.jobportal.entity;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "skills")
 public class Skill {
@@ -15,14 +13,16 @@ public class Skill {
     private String experienceLevel;
     private String yearsOfExperience;
 
-    @ManyToOne
-    @JoinColumn(name = "job_seeker_profile")
-    private int jobSeekerProfile;
+    @ManyToOne(cascade = CascadeType.ALL)
+    // name refers to the actual column name in the skills table.
+    // referencedColumnName refers to the primary key of job_seeker_profiles table.
+    @JoinColumn(name = "job_seeker_profile", referencedColumnName = "user_account_id")
+    private JobSeekerProfile jobSeekerProfile;
 
     public Skill() {
     }
 
-    public Skill(int id, String name, String experienceLevel, String yearsOfExperience, int jobSeekerProfile) {
+    public Skill(int id, String name, String experienceLevel, String yearsOfExperience, JobSeekerProfile jobSeekerProfile) {
         this.id = id;
         this.name = name;
         this.experienceLevel = experienceLevel;
@@ -62,11 +62,11 @@ public class Skill {
         this.yearsOfExperience = yearsOfExperience;
     }
 
-    public int getJobSeekerProfile() {
+    public JobSeekerProfile getJobSeekerProfile() {
         return jobSeekerProfile;
     }
 
-    public void setJobSeekerProfile(int jobSeekerProfile) {
+    public void setJobSeekerProfile(JobSeekerProfile jobSeekerProfile) {
         this.jobSeekerProfile = jobSeekerProfile;
     }
 
