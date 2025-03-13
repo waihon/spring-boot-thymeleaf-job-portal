@@ -9,12 +9,17 @@ import java.util.List;
 public class UserType {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_type_id")
     private int userTypeId;
 
     private String userTypeName;
 
-    @OneToMany(targetEntity = User.class, mappedBy = "userTypeId", cascade = CascadeType.ALL)
+    // targetEntity is not required as Java already infers User from List<User>.
+    // mappedBy refers to the actual field name in User, not the column name.
+    // orphanRemoval = true may be added to remove User records automatically
+    // if they are removed from the list in UserType.
+    @OneToMany(mappedBy = "userType", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<User> users;
 
     public UserType() {
