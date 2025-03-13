@@ -7,11 +7,16 @@ import java.util.List;
 @Entity
 @Table(name = "skills")
 public class Skill {
-    // Create a stub first for the purpose of defining JobSeekerProfile.
-
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    private String name;
+    private String experienceLevel;
+    private String yearsOfExperience;
+
+    @ManyToOne
+    @JoinColumn(name = "job_seeker_profile")
     private int jobSeekerProfile;
 
 }
