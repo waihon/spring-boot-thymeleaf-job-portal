@@ -19,4 +19,15 @@ public class Skill {
     @JoinColumn(name = "job_seeker_profile")
     private int jobSeekerProfile;
 
+    public Skill() {
+    }
+
+    public Skill(int id, String name, String experienceLevel, String yearsOfExperience, int jobSeekerProfile) {
+        this.id = id;
+        this.name = name;
+        this.experienceLevel = experienceLevel;
+        this.yearsOfExperience = yearsOfExperience;
+        this.jobSeekerProfile = jobSeekerProfile;
+    }
+
 }
