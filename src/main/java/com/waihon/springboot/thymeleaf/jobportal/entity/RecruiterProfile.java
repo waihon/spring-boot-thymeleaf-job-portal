@@ -28,6 +28,10 @@ public class RecruiterProfile {
     public RecruiterProfile() {
     }
 
+    public RecruiterProfile(User user) {
+        this.user = user;
+    }
+
     public RecruiterProfile(int userAccountId, User user, String firstName, String lastName,
                             String city, String state, String country, String company, String profilePhoto) {
         this.userAccountId = userAccountId;
