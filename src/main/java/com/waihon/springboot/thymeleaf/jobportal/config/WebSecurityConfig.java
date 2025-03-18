@@ -1,12 +1,13 @@
 package com.waihon.springboot.thymeleaf.jobportal.config;
 
+import com.waihon.springboot.thymeleaf.jobportal.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -14,7 +15,8 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class WebSecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+    private final CustomUserDetailsService customUserDetailsService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
     private final String[] publicUrls = {
             "/",
@@ -36,8 +38,10 @@ public class WebSecurityConfig {
     };
 
     @Autowired
-    public WebSecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public WebSecurityConfig(CustomUserDetailsService customUserDetailsService,
+                             CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
+        this.customUserDetailsService = customUserDetailsService;
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
     }
 
     @Bean
@@ -51,6 +55,20 @@ public class WebSecurityConfig {
             auth.anyRequest().authenticated();
         });
 
+        http.formLogin(form -> {
+                form.loginPage("/login").permitAll();
+                form.successHandler(customAuthenticationSuccessHandler);
+        });
+
+        http.logout(logout -> {
+                logout.logoutUrl("/logout");
+                logout.logoutSuccessUrl("/");
+        });
+
+        http.cors(Customizer.withDefaults());
+
+        http.csrf(csrf -> csrf.disable());
+
         return http.build();
     }
 
@@ -58,7 +76,7 @@ public class WebSecurityConfig {
     protected AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setPasswordEncoder(passwordEncoder());
-        authenticationProvider.setUserDetailsService(userDetailsService);
+        authenticationProvider.setUserDetailsService(customUserDetailsService);
 
         return authenticationProvider;
     }
