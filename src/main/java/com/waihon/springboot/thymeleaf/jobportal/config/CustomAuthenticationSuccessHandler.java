@@ -28,7 +28,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         // o If job seeker or recruiter role then send them to dashboard page
         if (hasRecruiterRole || hasJobSeekerRole) {
-            response.sendRedirect("/dashboard/");
+            response.sendRedirect("/dashboard");
         }
 
 
