@@ -8,9 +8,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +29,9 @@ public class UserController {
 
     private final UserTypeService userTypeService;
     private final UserService userService;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @Autowired
     public UserController(UserTypeService userTypeService, UserService userService) {
@@ -43,7 +50,7 @@ public class UserController {
     }
 
     @PostMapping("/register/new")
-    public String userRegistration(@Valid User user, Model model) {
+    public String userRegistration(@Valid User user, Model model, HttpServletRequest request) {
         Optional<User> optionalUser = userService.getUserByEmail(user.getEmail());
 
         if (optionalUser.isPresent()) {
@@ -56,7 +63,21 @@ public class UserController {
             return "register";
         }
 
+        String username = user.getEmail();
+        // For creating an authentication token, a clear password prior to persisting the user is required.
+        // After persisting the user, the password field contains encoded password.
+        String password = user.getPassword();
         userService.addNew(user);
+
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
+
+        UsernamePasswordAuthenticationToken token = new
+                UsernamePasswordAuthenticationToken(username, password);
+        token.setDetails(new WebAuthenticationDetails(request));
+
+        Authentication authentication = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return "redirect:/dashboard";
     }
