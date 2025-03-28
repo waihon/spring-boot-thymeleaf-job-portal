@@ -28,10 +28,10 @@ CREATE TABLE `job_post_activities` (
   `job_location_id` int DEFAULT NULL,
   `posted_by_id` int DEFAULT NULL,
   PRIMARY KEY (`job_post_id`),
-  KEY `FKpjpv059hollr4tk92ms09s6is` (`job_company_id`),
-  KEY `FK44003mnvj29aiijhsc6ftsgxe` (`job_location_id`),
-  KEY `FK62yqqbypsq2ik34ngtlw4m9k3` (`posted_by_id`),
-  CONSTRAINT `FK44003mnvj29aiijhsc6ftsgxe` FOREIGN KEY (`job_location_id`) REFERENCES `job_locations` (`id`),
-  CONSTRAINT `FK62yqqbypsq2ik34ngtlw4m9k3` FOREIGN KEY (`posted_by_id`) REFERENCES `users` (`user_id`),
-  CONSTRAINT `FKpjpv059hollr4tk92ms09s6is` FOREIGN KEY (`job_company_id`) REFERENCES `job_companies` (`id`)
+  KEY `fk_job_post_activities_job_company_id` (`job_company_id`),
+  KEY `fk_job_post_activities_job_location_id` (`job_location_id`),
+  KEY `fk_job_post_activities_posted_by_id` (`posted_by_id`),
+  CONSTRAINT `fk_job_post_activities_job_company_id` FOREIGN KEY (`job_company_id`) REFERENCES `job_companies` (`id`),
+  CONSTRAINT `fk_job_post_activities_job_location_id` FOREIGN KEY (`job_location_id`) REFERENCES `job_locations` (`id`),
+  CONSTRAINT `fk_job_post_activities_posted_by_id` FOREIGN KEY (`posted_by_id`) REFERENCES `users` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
