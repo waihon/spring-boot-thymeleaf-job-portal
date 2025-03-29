@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 @Entity
+@Table(name = "job_post_activities")
 public class JobPostActivity {
 
     @Id
