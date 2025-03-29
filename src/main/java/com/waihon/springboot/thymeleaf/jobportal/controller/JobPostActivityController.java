@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
+import com.waihon.springboot.thymeleaf.jobportal.entity.JobPostActivity;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -32,6 +33,14 @@ public class JobPostActivityController {
         model.addAttribute("user", currentUserProfile);
 
         return "dashboard";
+    }
+
+    @GetMapping("/dashboard/add")
+    public String addJobs(Model model) {
+        model.addAttribute("jobPostActivity", new JobPostActivity());
+        model.addAttribute("user", userService.getCurrentUserProfile());
+
+        return "add-jobs";
     }
 
 }
