@@ -1,11 +1,9 @@
 package com.waihon.springboot.thymeleaf.jobportal.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "job_locations")
 public class JobLocation {
 
     @Id
