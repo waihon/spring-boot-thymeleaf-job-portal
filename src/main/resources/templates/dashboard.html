@@ -101,7 +101,7 @@
         </div>
         <div class="box mt-3">
             <label class="large-label px-3 mb-3" sec:authorize="hasAuthority('Job Seeker')">Search Results</label>
-            <th:block th:each="jobPost:${jobPost}">
+            <th:block th:each="jobPost : ${jobPosts}">
                 <a
                         th:href="@{/job-details-apply/{id}(id=${jobPost.jobPostId})}"
                         style="text-decoration: none; color: black"
