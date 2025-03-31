@@ -117,34 +117,33 @@
                                     <span
                                             class="title-span"
                                             sec:authorize="hasAuthority('Recruiter')"
-                                            th:text="'('+ @{${jobPost.totalCandidates}}+' Candidates Applied)'"
-                                    >(xx candidates applied)</span
-                                    >
+                                            th:text="'(' + @{${jobPost.totalCandidates}} + ' Candidates Applied)'">
+                                        (xx Candidates Applied)
+                                    </span>
                                     <span
                                             class="title-span"
                                             sec:authorize="hasAuthority('Job Seeker')"
-                                            th:if="${jobPost.isActive == true}"
-                                    >(Applied)</span
-                                    >
+                                            th:if="${jobPost.isActive == true}">
+                                        (Applied)
+                                    </span>
                                     <span
                                             class="title-span"
                                             sec:authorize="hasAuthority('Job Seeker')"
-                                            th:if="${jobPost.isSaved == true}"
-                                    >(Saved)</span
-                                    >
+                                            th:if="${jobPost.isSaved == true}">
+                                        (Saved)
+                                    </span>
                                 </label>
                             </div>
                             <div class="col-md-4 text-center">
                                 <label
-                                        th:text="${jobPost.jobLocationId.city+', '+ jobPost.jobLocationId.state}"
-                                >
-                                    City State</label
-                                >
+                                        th:text="${jobPost.jobLocation.city + ', ' + jobPost.jobLocation.state}">
+                                    City, State
+                                </label>
                             </div>
                             <div class="col-md-4 text-right">
-                                <label th:text="@{${jobPost.jobCompanyId.name}}"
-                                >Recruiter Company Name</label
-                                >
+                                <label th:text="@{${jobPost.jobCompany.name}}">
+                                    Recruiter Company Name
+                                </label>
                             </div>
                         </div>
                     </div>
