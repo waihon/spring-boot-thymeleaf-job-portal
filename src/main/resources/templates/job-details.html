@@ -75,7 +75,7 @@
                 class="rounded-circle me-3"
                 height="50px"
                 width="50x"
-                th:src="@{${user.photosImagePath}}"
+                th:src="@{${user.photoImagePath}}"
         />
         <label th:text="${user.firstName+' '+user.lastName}" class="nav-item nav-link px-2 me-3">John Doe</label>
 
@@ -100,9 +100,9 @@
             <div class="ms-3">
                 <h4 th:text="${jobDetails.jobTitle}" class="job-title text-left">Software Engineer</h4>
                 <div class="mt-1">
-                    <p th:text="${jobDetails.jobLocationId.city+', '+ jobDetails.jobLocationId.state}"
+                    <p th:text="${jobDetails.jobLocation.city+', '+ jobDetails.jobLocation.state}"
                        class="m-0"> California, USA</p>
-                    <p th:text="${jobDetails.jobCompanyId.name}">Company</p>
+                    <p th:text="${jobDetails.jobCompany.name}">Company</p>
                 </div>
             </div>
         </div>
