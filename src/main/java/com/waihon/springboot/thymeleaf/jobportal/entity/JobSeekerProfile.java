@@ -9,7 +9,7 @@ import java.util.List;
 public class JobSeekerProfile {
 
     @Id
-    private int userAccountId;
+    private Integer userAccountId;
 
     @OneToOne
     @JoinColumn(name = "user_account_id")
@@ -41,7 +41,7 @@ public class JobSeekerProfile {
         this.user = user;
     }
 
-    public JobSeekerProfile(int userAccountId, User user, String firstName, String lastName,
+    public JobSeekerProfile(Integer userAccountId, User user, String firstName, String lastName,
                             String city, String state, String country, String workAuthorization,
                             String employmentType, String resume, String profilePhoto, List<Skill> skills) {
         this.userAccountId = userAccountId;
@@ -58,11 +58,11 @@ public class JobSeekerProfile {
         this.skills = skills;
     }
 
-    public int getUserAccountId() {
+    public Integer getUserAccountId() {
         return userAccountId;
     }
 
-    public void setUserAccountId(int userAccountId) {
+    public void setUserAccountId(Integer userAccountId) {
         this.userAccountId = userAccountId;
     }
 
@@ -152,6 +152,13 @@ public class JobSeekerProfile {
 
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    @Transient
+    public String getPhotoImagePath() {
+        if (profilePhoto == null || userAccountId == null) return null;
+
+        return "/photos/candidate/" + userAccountId + "/" + profilePhoto;
     }
 
     @Override
