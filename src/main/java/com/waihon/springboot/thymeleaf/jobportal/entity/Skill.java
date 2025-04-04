@@ -7,7 +7,7 @@ import jakarta.persistence.*;
 public class Skill {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String name;
     private String experienceLevel;
@@ -22,7 +22,7 @@ public class Skill {
     public Skill() {
     }
 
-    public Skill(int id, String name, String experienceLevel, String yearsOfExperience, JobSeekerProfile jobSeekerProfile) {
+    public Skill(Integer id, String name, String experienceLevel, String yearsOfExperience, JobSeekerProfile jobSeekerProfile) {
         this.id = id;
         this.name = name;
         this.experienceLevel = experienceLevel;
@@ -30,11 +30,11 @@ public class Skill {
         this.jobSeekerProfile = jobSeekerProfile;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
