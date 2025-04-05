@@ -12,6 +12,7 @@ public class JobPostActivity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "job_post_id")
     private Integer jobPostId;
 
     @ManyToOne(cascade = CascadeType.ALL)
