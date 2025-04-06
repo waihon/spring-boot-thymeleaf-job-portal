@@ -1,10 +1,8 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
-import com.waihon.springboot.thymeleaf.jobportal.entity.JobPostActivity;
-import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterJobDto;
-import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
-import com.waihon.springboot.thymeleaf.jobportal.entity.User;
+import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
+import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -30,12 +28,15 @@ public class JobPostActivityController {
 
     private final UserService userService;
     private final JobPostActivityService jobPostActivityService;
+    private final JobSeekerApplyService jobSeekerApplyService;
 
     @Autowired
     public JobPostActivityController(UserService userService,
-                                     JobPostActivityService jobPostActivityService) {
+                                     JobPostActivityService jobPostActivityService,
+                                     JobSeekerApplyService jobSeekerApplyService) {
         this.userService = userService;
         this.jobPostActivityService = jobPostActivityService;
+        this.jobSeekerApplyService = jobSeekerApplyService;
     }
 
     @GetMapping("/dashboard")
@@ -120,6 +121,28 @@ public class JobPostActivityController {
                 int recruiter = ((RecruiterProfile)currentUserProfile).getUserAccountId();
                 List<RecruiterJobDto> recruiterJobDtos = jobPostActivityService.getRecruiterJobs(recruiter);
                 model.addAttribute("jobPosts", recruiterJobDtos);
+            } else {
+                List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
+                        .getCandidateJobs((JobSeekerProfile) currentUserProfile);
+
+                boolean exist;
+
+                for (JobPostActivity jobPost : jobPosts) {
+                    exist = false;
+                    for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
+                        if (Objects.equals(jobPost.getJobPostId(), jobSeekerApply.getJob().getJobPostId())) {
+                            jobPost.setActive(true);
+                            exist = true;
+                            break;
+                        }
+                    }
+
+                    if (!exist) {
+                        jobPost.setActive(false);
+                    }
+
+                    model.addAttribute("jobPosts", jobPosts);
+                }
             }
         }
 
