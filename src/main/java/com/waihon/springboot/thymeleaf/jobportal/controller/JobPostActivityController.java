@@ -13,12 +13,17 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 public class JobPostActivityController {
@@ -34,7 +39,77 @@ public class JobPostActivityController {
     }
 
     @GetMapping("/dashboard")
-    public String searchJobs(Model model) {
+    public String searchJobs(Model model,
+                             @RequestParam(value = "job", required = false) String job,
+                             @RequestParam(value = "location", required = false) String location,
+                             @RequestParam(value = "partTime", required = false) String partTime,
+                             @RequestParam(value = "fullTime", required = false) String fullTime,
+                             @RequestParam(value = "freelance", required = false) String freelance,
+                             @RequestParam(value = "remoteOnly", required = false) String remoteOnly,
+                             @RequestParam(value = "officeOnly", required = false) String officeOnly,
+                             @RequestParam(value = "partialRemote", required = false) String partialRemote,
+                             @RequestParam(value = "today", required = false) boolean today,
+                             @RequestParam(value = "days7", required = false) boolean days7,
+                             @RequestParam(value = "days30", required = false) boolean days30
+    ) {
+        // Employment type
+        model.addAttribute("partTime", Objects.equals(partTime, "Part-time"));
+        model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
+        model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
+
+        // Remote
+        model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
+        model.addAttribute("officeOnly", Objects.equals(remoteOnly, "Office-Only"));
+        model.addAttribute("partialRemote", Objects.equals(remoteOnly, "Partial-Remote"));
+
+        // Date posted
+        model.addAttribute("today", today);
+        model.addAttribute("days7", days7);
+        model.addAttribute("days30", days30);
+
+        // Search boxes
+        model.addAttribute("job", job);
+        model.addAttribute("location", location);
+
+        LocalDate searchDate = null;
+        List<JobPostActivity> jobPosts = null;
+        boolean dateSearchFlag = true;
+
+        if (days30) {
+            searchDate = LocalDate.now().minusDays(30);
+        } else if (days7) {
+            searchDate = LocalDate.now().minusDays(7);
+        } else if (today) {
+            searchDate = LocalDate.now();
+        } else {
+            dateSearchFlag = false;
+        }
+
+        boolean remoteSearchFlag = true;
+        if (partTime == null && fullTime == null && freelance == null) {
+            partTime = "Part-time";
+            fullTime = "Full-time";
+            freelance = "Freelance";
+            remoteSearchFlag = false;
+        }
+
+        boolean typeSearchFlag = true;
+        if (remoteOnly == null && officeOnly == null && partialRemote == null) {
+            remoteOnly = "Remote-Only";
+            officeOnly = "Office-Only";
+            partialRemote = "Partial-Remote";
+            typeSearchFlag = false;
+        }
+
+        if (!dateSearchFlag && !remoteSearchFlag && !typeSearchFlag &&
+                !StringUtils.hasText(job) && !StringUtils.hasText(location)) {
+            jobPosts = jobPostActivityService.getAll();
+        } else {
+            jobPosts = jobPostActivityService.search(job, location,
+                    Arrays.asList(partTime, fullTime, freelance),
+                    Arrays.asList(remoteOnly, officeOnly, partialRemote), searchDate);
+        }
+
         Object currentUserProfile = userService.getCurrentUserProfile();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
