@@ -28,10 +28,10 @@ public class JobPostActivity {
     private JobCompany jobCompany;
 
     @Transient
-    private Boolean isActive;
+    private Boolean active;
 
     @Transient
-    private Boolean isSaved;
+    private Boolean saved;
 
     @Length(max = 10_000)
     private String descriptionOfJob;
@@ -49,14 +49,14 @@ public class JobPostActivity {
     }
 
     public JobPostActivity(Integer jobPostId, User postedBy, JobLocation jobLocation, JobCompany jobCompany,
-                           Boolean isActive, Boolean isSaved, String descriptionOfJob, String jobType,
+                           Boolean active, Boolean saved, String descriptionOfJob, String jobType,
                            String salary, String remote, Date postedDate, String jobTitle) {
         this.jobPostId = jobPostId;
         this.postedBy = postedBy;
         this.jobLocation = jobLocation;
         this.jobCompany = jobCompany;
-        this.isActive = isActive;
-        this.isSaved = isSaved;
+        this.active = active;
+        this.saved = saved;
         this.descriptionOfJob = descriptionOfJob;
         this.jobType = jobType;
         this.salary = salary;
@@ -97,20 +97,20 @@ public class JobPostActivity {
         this.jobCompany = jobCompany;
     }
 
-    public Boolean getActive() {
-        return isActive;
+    public Boolean isActive() {
+        return active;
     }
 
     public void setActive(Boolean active) {
-        isActive = active;
+        active = active;
     }
 
-    public Boolean getSaved() {
-        return isSaved;
+    public Boolean isSaved() {
+        return saved;
     }
 
     public void setSaved(Boolean saved) {
-        isSaved = saved;
+        saved = saved;
     }
 
     public @Length(max = 10_000) String getDescriptionOfJob() {
@@ -168,8 +168,8 @@ public class JobPostActivity {
                 ", postedBy=" + postedBy +
                 ", jobLocation=" + jobLocation +
                 ", jobCompany=" + jobCompany +
-                ", isActive=" + isActive +
-                ", isSaved=" + isSaved +
+                ", active=" + active +
+                ", saved=" + saved +
                 ", descriptionOfJob='" + descriptionOfJob + '\'' +
                 ", jobType='" + jobType + '\'' +
                 ", salary='" + salary + '\'' +
