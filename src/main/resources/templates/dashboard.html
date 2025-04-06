@@ -232,9 +232,22 @@
         <div class="box" sec:authorize="hasAuthority('Job Seeker')">
             <h1 class="primary-title">Candidate Dashboard</h1>
             <div class="inner">
-                <input id="job" class="radius-left" type="text" placeholder="Search for a job" name="job"
-                       th:value="${job}"/>
-                <input id="loc" class="" type="text" placeholder="Job Location" name="location" th:value="${location}"/>
+                <input
+                        class="radius-left"
+                        type="text"
+                        id="job"
+                        name="job"
+                        placeholder="Search for a job"
+                        th:value="${job}"
+                />
+                <input
+                        class=""
+                        type="text"
+                        id="loc"
+                        name="location"
+                        placeholder="Job Location"
+                        th:value="${location}"
+                />
                 <button class="radius-right" type="submit" form="myForm"><i class="fa fa-search"></i></button>
             </div>
         </div>
