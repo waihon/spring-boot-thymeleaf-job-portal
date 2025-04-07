@@ -102,7 +102,7 @@ public class JobPostActivity {
     }
 
     public void setActive(Boolean active) {
-        active = active;
+        this.active = active;
     }
 
     public Boolean isSaved() {
@@ -110,7 +110,7 @@ public class JobPostActivity {
     }
 
     public void setSaved(Boolean saved) {
-        saved = saved;
+        this.saved = saved;
     }
 
     public @Length(max = 10_000) String getDescriptionOfJob() {
