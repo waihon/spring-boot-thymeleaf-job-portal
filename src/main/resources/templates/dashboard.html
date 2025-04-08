@@ -278,13 +278,13 @@
                                     <span
                                             class="title-span"
                                             sec:authorize="hasAuthority('Job Seeker')"
-                                            th:if="${jobPost.isActive == true}">
+                                            th:if="${jobPost.active == true}">
                                         (Applied)
                                     </span>
                                     <span
                                             class="title-span"
                                             sec:authorize="hasAuthority('Job Seeker')"
-                                            th:if="${jobPost.isSaved == true}">
+                                            th:if="${jobPost.saved == true}">
                                         (Saved)
                                     </span>
                                 </label>
