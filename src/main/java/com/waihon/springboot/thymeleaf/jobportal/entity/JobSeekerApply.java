@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(uniqueConstraints = {
+@Table(name = "job_seeker_applies", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"user", "job"})
 })
 public class JobSeekerApply implements Serializable {
