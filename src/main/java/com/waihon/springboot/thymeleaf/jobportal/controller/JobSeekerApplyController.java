@@ -26,24 +26,28 @@ public class JobSeekerApplyController {
     private final JobSeekerApplyService jobSeekerApplyService;
     private final RecruiterProfileService recruiterProfileService;
     private final JobSeekerProfileService jobSeekerProfileService;
+    private final JobSeekerSaveService jobSeekerSaveService;
 
     @Autowired
     public JobSeekerApplyController(JobPostActivityService jobPostActivityService,
                                     UserService userService,
                                     JobSeekerApplyService jobSeekerApplyService,
                                     RecruiterProfileService recruiterProfileService,
-                                    JobSeekerProfileService jobSeekerProfileService) {
+                                    JobSeekerProfileService jobSeekerProfileService,
+                                    JobSeekerSaveService jobSeekerSaveService) {
         this.jobPostActivityService = jobPostActivityService;
         this.userService = userService;
         this.jobSeekerApplyService = jobSeekerApplyService;
         this.recruiterProfileService = recruiterProfileService;
         this.jobSeekerProfileService = jobSeekerProfileService;
+        this.jobSeekerSaveService = jobSeekerSaveService;
     }
 
     @GetMapping("job-details-apply/{id}")
     public String display(@PathVariable("id") int id, Model model) {
         JobPostActivity jobDetails = jobPostActivityService.getOne(id);
         List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getJobCandidates(jobDetails);
+        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getJobCandidates(jobDetails);
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
@@ -62,7 +66,15 @@ public class JobSeekerApplyController {
                             break;
                         }
                     }
+                    boolean saved = false;
+                    for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
+                        if (jobSeekerSave.getUser().getUserAccountId() == user.getUserAccountId()) {
+                            saved = true;
+                            break;
+                        }
+                    }
                     model.addAttribute("alreadyApplied", applied);
+                    model.addAttribute("alreadySaved", saved);
                 }
             }
         }
