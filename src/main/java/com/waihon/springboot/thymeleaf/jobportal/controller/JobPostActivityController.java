@@ -3,6 +3,7 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
+import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerSaveService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -29,14 +30,17 @@ public class JobPostActivityController {
     private final UserService userService;
     private final JobPostActivityService jobPostActivityService;
     private final JobSeekerApplyService jobSeekerApplyService;
+    private final JobSeekerSaveService jobSeekerSaveService;
 
     @Autowired
     public JobPostActivityController(UserService userService,
                                      JobPostActivityService jobPostActivityService,
-                                     JobSeekerApplyService jobSeekerApplyService) {
+                                     JobSeekerApplyService jobSeekerApplyService,
+                                     JobSeekerSaveService jobSeekerSaveService) {
         this.userService = userService;
         this.jobPostActivityService = jobPostActivityService;
         this.jobSeekerApplyService = jobSeekerApplyService;
+        this.jobSeekerSaveService = jobSeekerSaveService;
     }
 
     @GetMapping("/dashboard")
@@ -124,8 +128,11 @@ public class JobPostActivityController {
             } else {
                 List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
                         .getCandidateJobs((JobSeekerProfile) currentUserProfile);
+                List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService
+                        .getCandidateJobs((JobSeekerProfile) currentUserProfile);
 
                 boolean exist;
+                boolean saved;
 
                 for (JobPostActivity jobPost : jobPosts) {
                     exist = false;
@@ -137,8 +144,20 @@ public class JobPostActivityController {
                         }
                     }
 
+                    saved = false;
+                    for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
+                        if (Objects.equals(jobPost.getJobPostId(), jobSeekerSave.getJob().getJobPostId())) {
+                            jobPost.setSaved(true);
+                            saved = true;
+                            break;
+                        }
+                    }
+
                     if (!exist) {
                         jobPost.setActive(false);
+                    }
+                    if (!saved) {
+                        jobPost.setSaved(false);
                     }
 
                     model.addAttribute("jobPosts", jobPosts);
