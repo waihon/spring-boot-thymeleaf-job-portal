@@ -22,8 +22,7 @@ public class JobSeekerSave implements Serializable {
     @JoinColumn(name = "job_id", referencedColumnName = "job_post_id")
     private JobPostActivity job;
 
-    public JobSeekerSave(Integer id) {
-        this.id = id;
+    public JobSeekerSave() {
     }
 
     public JobSeekerSave(Integer id, JobSeekerProfile user, JobPostActivity job) {
