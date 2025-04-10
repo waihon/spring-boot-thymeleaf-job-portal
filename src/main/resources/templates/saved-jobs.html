@@ -11,7 +11,7 @@
     <meta name="description" content=""/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
-    <link rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}"/>
+    <link th:rel="stylesheet" type="text/css" media="all" th:href="@{/css/styles.css}"/>
     <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css} "/>
     <link th:rel="stylesheet" th:href="@{/webjars/font-awesome/css/all.css}"/>
 
@@ -41,28 +41,30 @@
         <ul class="navbar-nav m-auto mt-2 mt-lg-0">
 
             <li class="nav-item ">
-                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/dashboard/}"
-                ><i class="fas fa-search"></i>Search for Jobs</a
-                >
+                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/dashboard}">
+                    <i class="fas fa-search"></i>Search for Jobs
+                </a>
             </li>
             <li class="nav-item active">
-                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/saved-jobs/}">
-                    <i class="fa-solid fa-eye"></i>View Saved Jobs</a>
+                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/saved-jobs}">
+                    <i class="fa-solid fa-eye"></i>View Saved Jobs
+                </a>
             </li>
             <li class="nav-item ">
-                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/job-seeker-profile/}">
-                    <i class="fa-solid fa-pencil"></i>Edit Profile</a>
+                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/job-seeker-profile}">
+                    <i class="fa-solid fa-pencil"></i>Edit Profile
+                </a>
             </li>
         </ul>
         <img
                 class="rounded-circle me-3"
                 height="50px"
                 width="50x"
-                th:if="${user.photosImagePath!=null}"
-                th:src="@{${user?.photosImagePath}}"
+                th:if="${user.photoImagePath != null}"
+                th:src="@{${user?.photoImagePath}}"
         />
         <label th:if="${user.firstName != null && user.lastName != null}"
-               th:text="${user.firstName+' '+user.lastName}"
+               th:text="${user.firstName + ' ' + user.lastName}"
                class="nav-item nav-link px-2 me-3">
         </label>
 
@@ -85,7 +87,7 @@
 
         <div class="box mt-3">
             <label class="large-label px-3 mb-3">Results</label>
-            <th:block th:each="jobPost:${jobPost}">
+            <th:block th:each="jobPost : ${jobPosts}">
                 <a th:href="@{/job-details-apply/{id}(id=${jobPost.jobPostId})}"
                    style=" text-decoration:none; color:black;">
                     <div onclick="window.location=/job-details-apply/{id}(id=${jobPost.jobPostId})" class="job-row">
@@ -94,18 +96,18 @@
                                 <label class="job-title text-left">
                                     [[${jobPost.jobTitle}]]
                                     <span class="title-span" sec:authorize="hasAuthority('Recruiter')"
-                                          th:text="'('+ @{${jobPost.totalCandidates}}+' Candidates Applied)'">(xx candidates applied)</span>
+                                          th:text="'(' + @{${jobPost.totalCandidates}} + ' Candidates Applied)'">(xx candidates applied)</span>
                                     <span class="title-span" sec:authorize="hasAuthority('Job Seeker')"
-                                          th:if="${jobPost.isActive == true}">(Applied)</span>
+                                          th:if="${jobPost.active == true}">(Applied)</span>
 
                                 </label>
                             </div>
                             <div class="col-md-4 text-center">
-                                <label th:text="${jobPost.jobLocationId.city+', '+ jobPost.jobLocationId.state}">
+                                <label th:text="${jobPost.jobLocation.city + ', ' + jobPost.jobLocation.state}">
                                     City State</label>
                             </div>
                             <div class="col-md-4 text-right">
-                                <label th:text="@{${jobPost.jobCompanyId.name}}">Recruiter Company Name</label>
+                                <label th:text="@{${jobPost.jobCompany.name}}">Recruiter Company Name</label>
                             </div>
                         </div>
                     </div>
