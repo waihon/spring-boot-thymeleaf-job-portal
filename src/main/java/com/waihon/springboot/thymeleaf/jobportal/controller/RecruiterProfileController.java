@@ -38,7 +38,7 @@ public class RecruiterProfileController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public String recruiterProfile(Model model) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
