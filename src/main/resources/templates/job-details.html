@@ -21,7 +21,7 @@
 
 <header class="navbar navbar-expand-lg navbar-dark">
     <label class="mt-2 ms-5 font-weight-bold h5">
-        <a th:href="@{/dashboard/}">hotdevjobs</a>
+        <a th:href="@{/dashboard}">hotdevjobs</a>
         <span class="logo_com font-weight-bold h5" style="color: white">.com</span>
     </label>
     <button
@@ -40,17 +40,17 @@
         <ul class="navbar-nav m-auto mt-2 mt-lg-0">
 
             <li class="nav-item active">
-                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/dashboard/}">
+                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/dashboard}">
                     <i class="fas fa-search"></i>Search for Jobs
                 </a>
             </li>
             <li class="nav-item ">
-                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/saved-jobs/}">
+                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/saved-jobs}">
                     <i class="fa-solid fa-eye"></i>View Saved Jobs
                 </a>
             </li>
             <li class="nav-item ">
-                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/job-seeker-profile/}">
+                <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/job-seeker-profile}">
                     <i class="fa-solid fa-pencil"></i>Edit Profile
                 </a>
             </li>
@@ -61,12 +61,12 @@
                 </a>
             </li>
             <li class="nav-item active">
-                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/dashboard/}">
+                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/dashboard}">
                     <i class="fa-solid fa-eye"></i>View Your Jobs
                 </a>
             </li>
             <li class="nav-item ">
-                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/recruiter-profile/}">
+                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/recruiter-profile}">
                     <i class="fa-solid fa-pencil"></i>Edit Account
                 </a>
             </li>
@@ -148,9 +148,9 @@
                         <div class="candidatesApplied">
                             <label>Candidates Applied for Job</label>
                             <th:block th:each="apply : ${applyList}">
-                                <a th:href="@{/job-seeker-profile/{id}(id=${apply.userId.userAccountId})}"
+                                <a th:href="@{/job-seeker-profile/{id}(id=${apply.user.userAccountId})}"
                                    class="white"
-                                   th:text="${apply.userId.firstName + ', ' + apply.userId.lastName}">FirstName, LastName</a>
+                                   th:text="${apply.user.firstName + ', ' + apply.user.lastName}">FirstName, LastName</a>
                             </th:block>
                         </div>
                     </div>
