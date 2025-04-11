@@ -36,8 +36,11 @@
                     </div>
                     <div class="col-md-12">
                         <div>
-                            <h2 class="heading_font d-flex justify-content-center">
+                            <h2 class="heading_font d-flex justify-content-center" sec:authorize="hasAuthority('Job Seeker')">
                                 Set up your Profile
+                            </h2>
+                            <h2 class="heading_font d-flex justify-content-center" sec:authorize="hasAuthority('Recruiter')">
+                                Profile
                             </h2>
                         </div>
                     </div>
