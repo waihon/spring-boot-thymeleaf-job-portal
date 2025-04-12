@@ -55,6 +55,8 @@ public class JobSeekerApplyController {
                 RecruiterProfile  user = recruiterProfileService.getCurrentRecruiterProfile();
                 if (user != null) {
                     model.addAttribute("applyList", jobSeekerApplyList);
+                    model.addAttribute("jobHasApplies", jobSeekerApplyList.size() > 0);
+                    model.addAttribute("jobHasSaves", jobSeekerSaveList.size() > 0);
                 }
             } else {
                 JobSeekerProfile user = jobSeekerProfileService.getCurrentSeekerProfile();
