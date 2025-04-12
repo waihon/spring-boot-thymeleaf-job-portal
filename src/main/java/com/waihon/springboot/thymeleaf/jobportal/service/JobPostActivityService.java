@@ -42,6 +42,10 @@ public class JobPostActivityService {
                 .orElseThrow(() -> new RuntimeException("Job not found"));
     }
 
+    public void deleteOne(Integer id) {
+        jobPostActivityRepository.deleteById(id);
+    }
+
     public List<JobPostActivity> getAll() {
         return jobPostActivityRepository.findAll();
     }
