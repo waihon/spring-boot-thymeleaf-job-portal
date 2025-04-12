@@ -192,7 +192,9 @@
                         </form>
                     </div>
                     <div class="col-md-3">
-                        <form th:action="@{/dashboard/delete-job/{id}(id=${jobDetails.jobPostId})}" method="post">
+                        <form th:action="@{/dashboard/delete-job/{id}(id=${jobDetails.jobPostId})}"
+                              th:object="${jobDetails}" method="post">
+                            <input type="hidden" name="_method" value="delete" />
                             <button class="btn-sec btn-black w-100" type="submit">Delete Job</button>
                         </form>
                     </div>
