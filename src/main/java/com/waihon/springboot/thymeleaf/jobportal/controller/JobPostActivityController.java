@@ -13,10 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -277,6 +274,13 @@ public class JobPostActivityController {
         model.addAttribute("user", userService.getCurrentUserProfile());
 
         return "add-jobs";
+    }
+
+    @DeleteMapping("/dashboard/delete-job/{id}")
+    public String deleteJob(@PathVariable("id") int id) {
+        jobPostActivityService.deleteOne(id);
+
+        return "redirect:/dashboard";
     }
 
 }
