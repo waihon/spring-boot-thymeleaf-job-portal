@@ -78,7 +78,8 @@
                 width="50px"
                 th:src="@{${user.photoImagePath}}"
         />
-        <label th:text="${user.firstName + ' ' + user.lastName}" class="nav-item nav-link px-2 me-3">John Doe</label>
+        <label th:text="${user.firstName + ' ' + user.lastName}"
+               class="nav-item px-2 me-3">John Doe</label>
 
         <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
     </div>
