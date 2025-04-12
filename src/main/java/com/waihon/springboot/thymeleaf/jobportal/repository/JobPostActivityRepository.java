@@ -11,6 +11,9 @@ import java.util.List;
 
 public interface JobPostActivityRepository extends JpaRepository<JobPostActivity, Integer> {
 
+    @Override
+    void deleteById(Integer integer);
+
     @Query(value = " SELECT COUNT(s.user_id) AS totalCandidates, j.job_post_id AS jobPostId, " +
             " j.job_title AS jobTitle, l.id AS locationId, l.city, l.state, l.country, " +
             " c.id AS companyId, c.name" +
