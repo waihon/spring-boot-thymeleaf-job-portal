@@ -64,8 +64,8 @@ public class JobPostActivityController {
 
         // Remote
         model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
-        model.addAttribute("officeOnly", Objects.equals(remoteOnly, "Office-Only"));
-        model.addAttribute("partialRemote", Objects.equals(remoteOnly, "Partial-Remote"));
+        model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
+        model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
 
         // Date posted
         model.addAttribute("today", today);
@@ -190,8 +190,8 @@ public class JobPostActivityController {
 
         // Remote
         model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
-        model.addAttribute("officeOnly", Objects.equals(remoteOnly, "Office-Only"));
-        model.addAttribute("partialRemote", Objects.equals(remoteOnly, "Partial-Remote"));
+        model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
+        model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
 
         // Date posted
         model.addAttribute("today", today);
