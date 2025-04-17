@@ -54,6 +54,8 @@ public class JobPostActivityController {
                              @RequestParam(value = "days7", required = false) boolean days7,
                              @RequestParam(value = "days30", required = false) boolean days30
     ) {
+        model.addAttribute("currentPage", "dashboard");
+
         // Employment type
         model.addAttribute("partTime", Objects.equals(partTime, "Part-time"));
         model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
@@ -245,6 +247,8 @@ public class JobPostActivityController {
 
     @GetMapping("/dashboard/add")
     public String addJobs(Model model) {
+        model.addAttribute("currentPage", "add-jobs");
+
         model.addAttribute("jobPostActivity", new JobPostActivity());
         model.addAttribute("user", userService.getCurrentUserProfile());
 

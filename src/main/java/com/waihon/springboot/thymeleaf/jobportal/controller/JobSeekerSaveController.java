@@ -59,8 +59,10 @@ public class JobSeekerSaveController {
         return "redirect:/dashboard";
     }
 
-    @GetMapping("saved-jobs")
+    @GetMapping("/saved-jobs")
     public String savedJobs(Model model) {
+        model.addAttribute("currentPage", "saved-jobs");
+
         List<JobPostActivity> jobPosts = new ArrayList<>();
         Object currentUserProfile = userService.getCurrentUserProfile();
 
