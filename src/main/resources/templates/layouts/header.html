@@ -1,10 +1,8 @@
 <header th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark">
-    <label class="mt-2 ms-5 font-weight-bold h5"
-    ><a href="/">hotdevjobs</a
-    ><span class="logo_com font-weight-bold h5" style="color: white">
-          .com</span
-    ></label
-    >
+    <label class="mt-2 ms-5 font-weight-bold h5">
+        <a th:href="@{/dashboard}">hotdevjobs</a>
+        <span class="logo_com font-weight-bold h5" style="color: white">.com</span>
+    </label>
     <button
             class="navbar-toggler"
             type="button"
@@ -19,18 +17,17 @@
 
     <div class="collapse navbar-collapse" id="navbarToggler">
         <ul class="navbar-nav m-auto mt-2 mt-lg-0">
-
-            <li class="nav-item ">
+            <li class="nav-item" th:classappend="${currentPage == 'dashboard'} ? ' active'">
                 <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/dashboard}">
                     <i class="fas fa-search"></i>Search for Jobs
                 </a>
             </li>
-            <li class="nav-item active">
+            <li class="nav-item" th:classappend="${currentPage == 'saved-jobs'} ? ' active'">
                 <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/saved-jobs}">
                     <i class="fa-solid fa-eye"></i>View Saved Jobs
                 </a>
             </li>
-            <li class="nav-item ">
+            <li class="nav-item" th:classappend="${currentPage == 'job-seeker-profile'} ? ' active'">
                 <a sec:authorize="hasAuthority('Job Seeker')" class="nav-link" th:href="@{/job-seeker-profile}">
                     <i class="fa-solid fa-pencil"></i>Edit Profile
                 </a>
@@ -39,7 +36,7 @@
         <img
                 class="rounded-circle me-3"
                 height="50px"
-                width="50x"
+                width="50px"
                 th:if="${user.photoImagePath != null}"
                 th:src="@{${user?.photoImagePath}}"
         />

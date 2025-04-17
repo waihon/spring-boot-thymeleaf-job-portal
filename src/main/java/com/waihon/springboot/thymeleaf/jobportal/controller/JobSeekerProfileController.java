@@ -44,6 +44,8 @@ public class JobSeekerProfileController {
 
     @GetMapping("")
     public String jobSeekerProfile(Model model) {
+        model.addAttribute("currentPage", "job-seeker-profile");
+
         JobSeekerProfile jobSeekerProfile = new JobSeekerProfile();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<Skill> skills = new ArrayList<>();
