@@ -32,6 +32,23 @@
                     <i class="fa-solid fa-pencil"></i>Edit Profile
                 </a>
             </li>
+            <li class="nav-item" th:classappend="${currentPage == 'add-jobs'} ? ' active'">
+                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/dashboard/add}">
+                    <i class="fa-solid fa-file-circle-plus"></i>Post New Job
+                </a>
+            </li>
+            <li class="nav-item" th:classappend="${currentPage == 'dashboard'} ? ' active'">
+                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/dashboard}">
+                    <i class="fa-solid fa-eye"></i>View Your Jobs
+                </a>
+            </li>
+            <li class="nav-item" th:classappend="${currentPage == 'recruiter-profile'} ? ' active'">
+                <a sec:authorize="hasAuthority('Recruiter')" class="nav-link" th:href="@{/recruiter-profile}">
+                    <i class="fa-solid fa-pencil"></i>Edit Account
+                </a>
+            </li>
+        </ul>
+
         </ul>
         <img
                 class="rounded-circle me-3"
