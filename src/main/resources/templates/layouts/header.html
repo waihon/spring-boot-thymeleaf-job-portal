@@ -57,14 +57,12 @@
                 th:if="${user.photoImagePath != null}"
                 th:src="@{${user?.photoImagePath}}"
         />
-        <label th:if="${user.firstName != null && user.lastName != null}"
-               th:text="${user.firstName + ' ' + user.lastName}"
-               class="nav-item px-2 me-3">
-        </label>
-        <label th:unless="${user.firstName != null && user.lastName != null}"
-               th:text="${username}"
-               class="nav-item px-2 me-3">
-        </label>
+        <th:block th:with="displayName=${user != null and user.firstName != null and user.lastName != null}
+                ? ${user.firstName + ' ' + user.lastName}
+                : (${username != null} ? ${username} : 'Guest')">
+            <label th:text="${displayName}" class="nav-item px-2 me-3"></label>
+        </th:block>
+
 
         <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
     </div>
