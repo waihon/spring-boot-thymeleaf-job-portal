@@ -50,20 +50,28 @@
         </ul>
 
         </ul>
-        <img
-                class="rounded-circle me-3"
-                height="50px"
-                width="50px"
-                th:if="${user != null and user.photoImagePath != null}"
-                th:src="@{${user?.photoImagePath}}"
-        />
-        <th:block th:with="displayName=${user != null and user.firstName != null and user.lastName != null}
+
+        <div sec:authorize="isAuthenticated()">
+            <img
+                    class="rounded-circle me-3"
+                    height="50px"
+                    width="50px"
+                    th:if="${user != null and user.photoImagePath != null}"
+                    th:src="@{${user?.photoImagePath}}"
+            />
+
+            <th:block th:with="displayName=${user != null and user.firstName != null and user.lastName != null}
                 ? ${user.firstName + ' ' + user.lastName}
                 : (${username != null} ? ${username} : 'Guest')">
-            <label th:text="${displayName}" class="nav-item px-2 me-3"></label>
-        </th:block>
+                <label th:text="${displayName}" class="nav-item px-2 me-3"></label>
+            </th:block>
 
+            <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
+        </div>
 
-        <button class="myBtn-light me-5" onclick="window.location.href='/logout'">Logout</button>
+        <div sec:authorize="isAnonymous()">
+            <label class="nav-item px-2 me-3">Guest</label>
+        </div>
+
     </div>
 </header>
