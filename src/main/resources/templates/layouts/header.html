@@ -56,7 +56,7 @@
                     class="rounded-circle me-3"
                     height="50px"
                     width="50px"
-                    th:if="${user != null and user.photoImagePath != null}"
+                    th:if="${user != null and user.photoImagePath != null and user.photoImagePath == ''}"
                     th:src="@{${user?.photoImagePath}}"
             />
 
