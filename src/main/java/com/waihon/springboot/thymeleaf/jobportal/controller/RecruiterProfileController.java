@@ -5,6 +5,7 @@ import com.waihon.springboot.thymeleaf.jobportal.entity.User;
 import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
 import com.waihon.springboot.thymeleaf.jobportal.service.RecruiterProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
+import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,10 +16,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Objects;
@@ -55,9 +54,14 @@ public class RecruiterProfileController {
     }
 
     @PostMapping("/add-new")
-    public String addNew(RecruiterProfile recruiterProfile,
+    public String addNew(@Valid @ModelAttribute("profile") RecruiterProfile recruiterProfile,
+                         BindingResult result,
                          @RequestParam("image")MultipartFile multipartFile,
                          Model model) {
+        if (result.hasErrors()) {
+            return "recruiter-profile"; // re-render form with errors
+        }
+
         // Associate recruiter profile with existing user account
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof  AnonymousAuthenticationToken)) {
