@@ -12,12 +12,19 @@ import java.nio.file.StandardCopyOption;
 public class FileUploadUtil {
 
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
+        if (fileName == null || fileName.equals("")) {
+            return;
+        }
+
         Path uploadPath = Paths.get(uploadDir);
         if (!Files.exists(uploadPath)) {
             Files.createDirectories(uploadPath);
         }
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
+            if (inputStream.available() == 0) {
+                return;
+            }
             Path path = uploadPath.resolve(fileName);
             System.out.println("File path: " + path);
             System.out.println("File name: " + fileName);
