@@ -1,6 +1,7 @@
 package com.waihon.springboot.thymeleaf.jobportal.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -33,16 +34,24 @@ public class JobPostActivity {
     @Transient
     private Boolean saved;
 
-    @Length(max = 10_000)
+    @NotBlank(message = "Job Description is required.")
+    @Length(min = 300, message = "Job Description is too short (minimum 300 characters).")
+    @Length(max = 10_000, message = "Job Description is too long (maximum 10,000 characters.")
     private String descriptionOfJob;
 
+    @NotBlank(message = "Employment Type is required.")
     private String jobType;
+
     private String salary;
+
+    @NotBlank(message = "Work Model is required.")
     private String remote;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date postedDate;
 
+    @NotBlank(message = "Job Title is required.")
+    @Length(min = 15, message = "Job Title is too short (minimum 15 characters")
     private String jobTitle;
 
     public JobPostActivity() {
