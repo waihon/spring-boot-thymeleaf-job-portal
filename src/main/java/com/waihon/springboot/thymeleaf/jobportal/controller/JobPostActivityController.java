@@ -5,6 +5,7 @@ import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerSaveService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -256,7 +258,13 @@ public class JobPostActivityController {
     }
 
     @PostMapping("/dashboard/add-new")
-    public String addNew(JobPostActivity jobPostActivity, Model model) {
+    public String addNew(@Valid @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+                         BindingResult result,
+                         Model model) {
+        if (result.hasErrors()) {
+            return "add-jobs"; // re-render form with errors
+        }
+
         User user = userService.getCurrentUser();
         if (user != null) {
             jobPostActivity.setPostedBy(user);

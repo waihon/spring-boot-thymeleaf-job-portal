@@ -41,6 +41,7 @@
             <div class="row" >
                 <div class="col-lg-12 form-group">
                     <input id="title" type="text" th:field="*{jobTitle}" class="form-control" placeholder="Job Title">
+                    <span th:if="${#fields.hasErrors('jobTitle')}" th:errors="*{jobTitle}" class="text-danger small"></span>
                 </div>
             </div>
 
@@ -53,14 +54,16 @@
                         <option th:value="Freelance" >Freelance</option>
                         <option th:value="Internship" >Internship</option>
                     </select>
+                    <span th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}" class="text-danger small"></span>
                 </div>
                 <div class="col-md-4 form-group">
                     <select id="remote" th:field="*{remote}" class="form-control">
-                        <option value="">Select a Remote</option>
+                        <option value="">Work Model</option>
                         <option th:value="Remote-Only">Remote-Only</option>
                         <option th:value="Office-Only">Office-Only</option>
                         <option th:value="Partial-Remote"> Partial-Remote</option>
                     </select>
+                    <span th:if="${#fields.hasErrors('remote')}" th:errors="*{remote}" class="text-danger small"></span>
                 </div>
                 <div class="col-md-4 form-group">
                     <input id="salary" th:field="*{salary}" type="text" class="form-control" placeholder="Salary">
@@ -71,6 +74,7 @@
                     <label class="mt-2 heading_font font_sub_heading_color">Description</label>
                     <textarea type="text" rows="4" id="content" placeholder="Content" class="form-control"
                               th:field="*{descriptionOfJob}" autocomplete="off"></textarea>
+                    <span th:if="${#fields.hasErrors('descriptionOfJob')}" th:errors="*{descriptionOfJob}" class="text-danger small"></span>
                 </div>
             </div>
 
