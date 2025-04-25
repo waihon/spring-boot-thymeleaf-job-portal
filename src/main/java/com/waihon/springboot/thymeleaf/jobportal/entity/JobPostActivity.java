@@ -1,7 +1,10 @@
 package com.waihon.springboot.thymeleaf.jobportal.entity;
 
+import com.waihon.springboot.thymeleaf.jobportal.validation.AdvancedCheck;
+import com.waihon.springboot.thymeleaf.jobportal.validation.BasicCheck;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -34,24 +37,24 @@ public class JobPostActivity {
     @Transient
     private Boolean saved;
 
-    @NotBlank(message = "Job Description is required.")
-    @Length(min = 300, message = "Job Description is too short (minimum 300 characters).")
-    @Length(max = 10_000, message = "Job Description is too long (maximum 10,000 characters.")
+    @NotBlank(message = "Job Description is required.", groups = BasicCheck.class)
+    @Size(min = 300, message = "Job Description is too short (minimum 300 characters).", groups = AdvancedCheck.class)
+    @Size(max = 10_000, message = "Job Description is too long (maximum 10,000 characters.", groups = AdvancedCheck.class)
     private String descriptionOfJob;
 
-    @NotBlank(message = "Employment Type is required.")
+    @NotBlank(message = "Employment Type is required.", groups = BasicCheck.class)
     private String jobType;
 
     private String salary;
 
-    @NotBlank(message = "Work Model is required.")
+    @NotBlank(message = "Work Model is required.", groups = BasicCheck.class)
     private String remote;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date postedDate;
 
-    @NotBlank(message = "Job Title is required.")
-    @Length(min = 15, message = "Job Title is too short (minimum 15 characters")
+    @NotBlank(message = "Job Title is required.", groups = BasicCheck.class)
+    @Size(min = 15, message = "Job Title is too short (minimum 15 characters)", groups = AdvancedCheck.class)
     private String jobTitle;
 
     public JobPostActivity() {
