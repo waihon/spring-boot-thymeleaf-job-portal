@@ -24,6 +24,7 @@ public class JobPostActivity {
     @JoinColumn(name = "posted_by_id", referencedColumnName = "user_id")
     private User postedBy;
 
+    @Valid
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "job_location_id", referencedColumnName = "id")
     private JobLocation jobLocation;
