@@ -1,6 +1,10 @@
 package com.waihon.springboot.thymeleaf.jobportal.entity;
 
+import com.waihon.springboot.thymeleaf.jobportal.validation.AdvancedCheck;
+import com.waihon.springboot.thymeleaf.jobportal.validation.BasicCheck;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "job_locations")
@@ -10,8 +14,13 @@ public class JobLocation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "City is required.", groups = BasicCheck.class)
     private String city;
+
+    @NotBlank(message = "State is required.", groups = BasicCheck.class)
     private String state;
+
+    @NotBlank(message = "Country is required.", groups = BasicCheck.class)
     private String country;
 
     public JobLocation() {

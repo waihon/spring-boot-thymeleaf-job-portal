@@ -82,12 +82,15 @@
             <div class="row" >
                 <div class="col-md-4 form-group">
                     <input th:field="*{jobLocation.city}" id="city" type="text"  class="form-control" placeholder="City">
+                    <span th:if="${#fields.hasErrors('jobLocation.city')}" th:errors="*{jobLocation.city}" class="text-danger small"></span>
                 </div>
                 <div class="col-md-4 form-group">
                     <input id="state" th:field="*{jobLocation.state}" type="text"  class="form-control" placeholder="State">
+                    <span th:if="${#fields.hasErrors('jobLocation.state')}" th:errors="*{jobLocation.state}" class="text-danger small"></span>
                 </div>
                 <div class="col-md-4 form-group">
                     <input id="country" th:field="*{jobLocation.country}" type="text"  class="form-control" placeholder="Country">
+                    <span th:if="${#fields.hasErrors('jobLocation.country')}" th:errors="*{jobLocation.country}" class="text-danger small"></span>
                 </div>
             </div>
             <div class="row">
