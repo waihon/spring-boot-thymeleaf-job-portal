@@ -5,6 +5,7 @@ import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerSaveService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
+import com.waihon.springboot.thymeleaf.jobportal.validation.ValidationSequence;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -258,10 +260,14 @@ public class JobPostActivityController {
     }
 
     @PostMapping("/dashboard/add-new")
-    public String addNew(@Valid @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+    public String addNew(@Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
                          BindingResult result,
                          Model model) {
         if (result.hasErrors()) {
+            result.getAllErrors().forEach(err ->
+                System.out.println("❗ Validation error: " + err.getDefaultMessage())
+            );
+
             return "add-jobs"; // re-render form with errors
         }
 
