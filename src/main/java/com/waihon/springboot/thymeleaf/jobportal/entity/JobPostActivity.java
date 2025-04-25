@@ -3,6 +3,7 @@ package com.waihon.springboot.thymeleaf.jobportal.entity;
 import com.waihon.springboot.thymeleaf.jobportal.validation.AdvancedCheck;
 import com.waihon.springboot.thymeleaf.jobportal.validation.BasicCheck;
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.Length;
@@ -27,6 +28,7 @@ public class JobPostActivity {
     @JoinColumn(name = "job_location_id", referencedColumnName = "id")
     private JobLocation jobLocation;
 
+    @Valid
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "job_company_id", referencedColumnName = "id")
     private JobCompany jobCompany;
