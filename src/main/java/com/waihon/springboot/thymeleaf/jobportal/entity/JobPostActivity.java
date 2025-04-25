@@ -125,11 +125,11 @@ public class JobPostActivity {
         this.saved = saved;
     }
 
-    public @Length(max = 10_000) String getDescriptionOfJob() {
+    public String getDescriptionOfJob() {
         return descriptionOfJob;
     }
 
-    public void setDescriptionOfJob(@Length(max = 10_000) String descriptionOfJob) {
+    public void setDescriptionOfJob(String descriptionOfJob) {
         this.descriptionOfJob = descriptionOfJob;
     }
 
