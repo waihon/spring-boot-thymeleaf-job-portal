@@ -6,6 +6,7 @@ import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerSaveService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import com.waihon.springboot.thymeleaf.jobportal.validation.ValidationSequence;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -250,7 +251,10 @@ public class JobPostActivityController {
     }
 
     @GetMapping("/dashboard/add")
-    public String addJobs(Model model) {
+    public String addJobs(Model model, HttpServletRequest request) {
+        String returnUrl = resolveReturnUrl(request);
+        model.addAttribute("returnUrl", returnUrl);
+
         model.addAttribute("currentPage", "add-jobs");
 
         model.addAttribute("jobPostActivity", new JobPostActivity());
@@ -262,11 +266,15 @@ public class JobPostActivityController {
     @PostMapping("/dashboard/add-new")
     public String addNew(@Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
                          BindingResult result,
-                         Model model) {
+                         Model model,
+                         HttpServletRequest request) {
         if (result.hasErrors()) {
             result.getAllErrors().forEach(err ->
                 System.out.println("❗ Validation error: " + err.getDefaultMessage())
             );
+
+            String returnUrl = resolveReturnUrl(request);
+            model.addAttribute("returnUrl", returnUrl);
 
             return "add-jobs"; // re-render form with errors
         }
@@ -299,6 +307,19 @@ public class JobPostActivityController {
         jobPostActivityService.deleteOne(id);
 
         return "redirect:/dashboard";
+    }
+
+    private String resolveReturnUrl(HttpServletRequest request) {
+        String referer = request.getHeader("Referer");
+        String returnUrl = (referer != null && !referer.endsWith("/dashboard/add") &&
+                !referer.endsWith("/dashboard/add-new"))
+                ? referer
+                : "/dashboard"; // Default fallback
+
+        System.out.println("referer: " + referer);
+        System.out.println("refernUrl: " + returnUrl);
+
+        return returnUrl;
     }
 
 }
