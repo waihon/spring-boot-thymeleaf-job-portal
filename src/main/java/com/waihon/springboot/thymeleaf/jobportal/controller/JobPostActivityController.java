@@ -292,8 +292,12 @@ public class JobPostActivityController {
         return "redirect:/dashboard";
     }
 
-    @PostMapping("dashboard/edit/{id}")
-    public String editJob(@PathVariable("id") int id, Model model) {
+    @GetMapping("dashboard/edit/{id}")
+    public String editJob(@PathVariable("id") int id, Model model,
+                          HttpServletRequest request) {
+        String returnUrl = resolveReturnUrl(request);
+        model.addAttribute("returnUrl", returnUrl);
+
         JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
 
         model.addAttribute("jobPostActivity", jobPostActivity);
