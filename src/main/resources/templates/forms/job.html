@@ -1,0 +1,85 @@
+<input hidden type="text" th:field="*{jobPostId}" >
+<input hidden type="text" th:field="*{jobLocation.id}" >
+<input hidden type="text" th:field="*{jobCompany.id}" >
+<div class="row">
+    <div class="col-lg-12">
+        <div class="d-flex justify-content-center pt-3">
+            <h1 class="heading_font font-weight-bold"
+                th:text="${jobPostActivity.jobPostId == null ? 'Post New Job' : 'Edit Job'}"
+            >
+                Post New Job
+            </h1>
+        </div>
+    </div>
+</div>
+<label class="heading_font font_sub_heading_color">Job Details</label>
+<div class="row" >
+    <div class="col-lg-12 form-group">
+        <input id="title" type="text" th:field="*{jobTitle}" class="form-control" placeholder="Job Title">
+        <span th:if="${#fields.hasErrors('jobTitle')}" th:errors="*{jobTitle}" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 form-group">
+        <select id="type" th:field="*{jobType}" class="form-control">
+            <option value="" >Employment Type</option>
+            <option th:value="Full-time" >Full-time</option>
+            <option th:value="Part-time" >Part-time</option>
+            <option th:value="Freelance" >Freelance</option>
+            <option th:value="Internship" >Internship</option>
+        </select>
+        <span th:if="${#fields.hasErrors('jobType')}" th:errors="*{jobType}" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 form-group">
+        <select id="remote" th:field="*{remote}" class="form-control">
+            <option value="">Work Model</option>
+            <option th:value="Remote-Only">Remote-Only</option>
+            <option th:value="Office-Only">Office-Only</option>
+            <option th:value="Partial-Remote"> Partial-Remote</option>
+        </select>
+        <span th:if="${#fields.hasErrors('remote')}" th:errors="*{remote}" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 form-group">
+        <input id="salary" th:field="*{salary}" type="text" class="form-control" placeholder="Salary">
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12 form-group">
+        <label class="mt-2 heading_font font_sub_heading_color">Description</label>
+        <textarea type="text" rows="4" id="content" placeholder="Content" class="form-control"
+                  th:field="*{descriptionOfJob}" autocomplete="off"></textarea>
+        <span th:if="${#fields.hasErrors('descriptionOfJob')}" th:errors="*{descriptionOfJob}" class="text-danger small"></span>
+    </div>
+</div>
+
+<label class="mt-2 heading_font font_sub_heading_color">Location</label>
+<div class="row" >
+    <div class="col-md-4 form-group">
+        <input th:field="*{jobLocation.city}" id="city" type="text"  class="form-control" placeholder="City">
+        <span th:if="${#fields.hasErrors('jobLocation.city')}" th:errors="*{jobLocation.city}" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 form-group">
+        <input id="state" th:field="*{jobLocation.state}" type="text"  class="form-control" placeholder="State">
+        <span th:if="${#fields.hasErrors('jobLocation.state')}" th:errors="*{jobLocation.state}" class="text-danger small"></span>
+    </div>
+    <div class="col-md-4 form-group">
+        <input id="country" th:field="*{jobLocation.country}" type="text"  class="form-control" placeholder="Country">
+        <span th:if="${#fields.hasErrors('jobLocation.country')}" th:errors="*{jobLocation.country}" class="text-danger small"></span>
+    </div>
+</div>
+<div class="row">
+    <div class="col-lg-12 form-group">
+        <label class="mt-2 heading_font font_sub_heading_color">Company</label>
+        <input id="companyName" th:field="*{jobCompany.name}" type="text" class="form-control" placeholder="Company Name">
+        <span th:if="${#fields.hasErrors('jobCompany.name')}" th:errors="*{jobCompany.name}" class="text-danger small"></span>
+    </div>
+</div>
+
+<div class="row mt-4" >
+    <div class="col d-flex justify-content-center">
+        <button type="submit" name="submit" class="btn btn-primary base_button px-4 py-2 mb-5">Save</button>
+        <a th:href="${returnUrl}" class="btn btn-secondary base_button px-4 py-2 mb-5 ms-2">Cancel</a>
+
+    </div>
+</div>
