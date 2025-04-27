@@ -270,7 +270,7 @@ public class JobPostActivityController {
                          BindingResult result,
                          Model model,
                          HttpServletRequest request) {
-        return saveJob(jobPostActivity, result, model, request, CrudMode.CREATE);
+        return saveJob(null, jobPostActivity, result, model, request, CrudMode.CREATE);
     }
 
     @GetMapping("dashboard/edit/{id}")
@@ -289,13 +289,13 @@ public class JobPostActivityController {
         return "edit-jobs";
     }
 
-    @PostMapping("/dashboard/save-edit")
-    public String saveEdit(@Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
-                         BindingResult result,
-                         Model model,
-                         HttpServletRequest request) {
-
-        return saveJob(jobPostActivity, result, model, request, CrudMode.UPDATE);
+    @PostMapping("/dashboard/save-edit/{id}")
+    public String saveEdit(@PathVariable("id") int id,
+                           @Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+                           BindingResult result,
+                           Model model,
+                           HttpServletRequest request) {
+        return saveJob(id, jobPostActivity, result, model, request, CrudMode.UPDATE);
     }
 
     @DeleteMapping("/dashboard/delete-job/{id}")
@@ -316,7 +316,7 @@ public class JobPostActivityController {
         else {
             Integer jobId = StringUtil.extractLastNumber(referer);
             returnUrl = (referer != null && !referer.contains("/dashboard/edit") &&
-                    !referer.endsWith("/dashboard/save-edit"))
+                    !referer.contains("/dashboard/save-edit"))
                     ? referer
                     : (jobId != null ? "/job-details-apply/" + jobId : "/dashboard"); // Default fallback
         }
@@ -327,11 +327,12 @@ public class JobPostActivityController {
         return returnUrl;
     }
 
-    public String saveJob(@Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
-                         BindingResult result,
-                         Model model,
-                         HttpServletRequest request,
-                         CrudMode mode) {
+    public String saveJob(Integer jobId,
+                          @Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+                          BindingResult result,
+                          Model model,
+                          HttpServletRequest request,
+                          CrudMode mode) {
         if (result.hasErrors()) {
             result.getAllErrors().forEach(err ->
                     System.out.println("❗ Validation error: " + err.getDefaultMessage())
