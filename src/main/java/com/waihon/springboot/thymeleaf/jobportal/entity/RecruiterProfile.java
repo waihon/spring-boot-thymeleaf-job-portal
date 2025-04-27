@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.entity;
 
+import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -16,10 +17,10 @@ public class RecruiterProfile {
     @MapsId
     private User user;
 
-    @NotBlank(message = "First Name is required")
+    @NotBlank(groups = OnUpdate.class, message = "First Name is required")
     private String firstName;
 
-    @NotBlank(message = "Last Name is required")
+    @NotBlank(groups = OnUpdate.class, message = "Last Name is required")
     private String lastName;
 
     private String city;

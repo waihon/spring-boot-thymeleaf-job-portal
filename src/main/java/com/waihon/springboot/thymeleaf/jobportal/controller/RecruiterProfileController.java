@@ -5,6 +5,8 @@ import com.waihon.springboot.thymeleaf.jobportal.entity.User;
 import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
 import com.waihon.springboot.thymeleaf.jobportal.service.RecruiterProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
+import com.waihon.springboot.thymeleaf.jobportal.validation.OnCreate;
+import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import jakarta.validation.Valid;
 import org.apache.tomcat.util.http.fileupload.FileUpload;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,19 +49,27 @@ public class RecruiterProfileController {
                     .orElseThrow(() -> new UsernameNotFoundException("Could not find user"));
 
             Optional<RecruiterProfile> recruiterProfile = recruiterProfileService.getOne(user.getUserId());
-            recruiterProfile.ifPresent(profile ->
-                    model.addAttribute("profile", profile));
+            recruiterProfile.ifPresent(profile -> {
+                model.addAttribute("profile", profile);
+                Boolean newProfile = !StringUtils.hasLength(profile.getFirstName()) ||
+                        !StringUtils.hasLength(profile.getLastName());
+                model.addAttribute("newProfile", newProfile);
+            });
         }
 
         return "recruiter-profile";
     }
 
     @PostMapping("/add-new")
-    public String addNew(@Valid @ModelAttribute("profile") RecruiterProfile recruiterProfile,
+    public String addNew(@Validated(OnUpdate.class) @ModelAttribute("profile") RecruiterProfile recruiterProfile,
                          BindingResult result,
                          @RequestParam("image")MultipartFile multipartFile,
                          Model model) {
         if (result.hasErrors()) {
+            Boolean newProfile = !StringUtils.hasLength(recruiterProfile.getFirstName()) ||
+                    !StringUtils.hasLength(recruiterProfile.getLastName());
+            model.addAttribute("newProfile", newProfile);
+
             return "recruiter-profile"; // re-render form with errors
         }
 
