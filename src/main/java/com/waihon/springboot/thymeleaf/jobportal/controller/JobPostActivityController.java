@@ -1,10 +1,12 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
+import com.waihon.springboot.thymeleaf.jobportal.enums.CrudMode;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerSaveService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
+import com.waihon.springboot.thymeleaf.jobportal.util.StringUtil;
 import com.waihon.springboot.thymeleaf.jobportal.validation.ValidationSequence;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -252,7 +254,7 @@ public class JobPostActivityController {
 
     @GetMapping("/dashboard/add")
     public String addJobs(Model model, HttpServletRequest request) {
-        String returnUrl = resolveReturnUrl(request);
+        String returnUrl = resolveReturnUrl(request, CrudMode.CREATE);
         model.addAttribute("returnUrl", returnUrl);
 
         model.addAttribute("currentPage", "add-jobs");
@@ -268,15 +270,77 @@ public class JobPostActivityController {
                          BindingResult result,
                          Model model,
                          HttpServletRequest request) {
+        return saveJob(jobPostActivity, result, model, request, CrudMode.CREATE);
+    }
+
+    @GetMapping("dashboard/edit/{id}")
+    public String editJob(@PathVariable("id") int id, Model model,
+                          HttpServletRequest request) {
+        String returnUrl = resolveReturnUrl(request, CrudMode.UPDATE);
+        model.addAttribute("returnUrl", returnUrl);
+
+        model.addAttribute("currentPage", "edit-jobs");
+
+        JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
+
+        model.addAttribute("jobPostActivity", jobPostActivity);
+        model.addAttribute("user", userService.getCurrentUserProfile());
+
+        return "edit-jobs";
+    }
+
+    @PostMapping("/dashboard/save-edit")
+    public String saveEdit(@Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+                         BindingResult result,
+                         Model model,
+                         HttpServletRequest request) {
+
+        return saveJob(jobPostActivity, result, model, request, CrudMode.UPDATE);
+    }
+
+    @DeleteMapping("/dashboard/delete-job/{id}")
+    public String deleteJob(@PathVariable("id") int id) {
+        jobPostActivityService.deleteOne(id);
+
+        return "redirect:/dashboard";
+    }
+
+    private String resolveReturnUrl(HttpServletRequest request, CrudMode mode) {
+        String referer = request.getHeader("Referer");
+        String returnUrl;
+        if (mode == CrudMode.CREATE)
+            returnUrl = (referer != null && !referer.endsWith("/dashboard/add") &&
+                    !referer.endsWith("/dashboard/add-new"))
+                    ? referer
+                    : "/dashboard"; // Default fallback
+        else {
+            Integer jobId = StringUtil.extractLastNumber(referer);
+            returnUrl = (referer != null && !referer.contains("/dashboard/edit") &&
+                    !referer.endsWith("/dashboard/save-edit"))
+                    ? referer
+                    : (jobId != null ? "/job-details-apply/" + jobId : "/dashboard"); // Default fallback
+        }
+
+        System.out.println("referer: " + referer);
+        System.out.println("refernUrl: " + returnUrl);
+
+        return returnUrl;
+    }
+
+    public String saveJob(@Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+                         BindingResult result,
+                         Model model,
+                         HttpServletRequest request,
+                         CrudMode mode) {
         if (result.hasErrors()) {
             result.getAllErrors().forEach(err ->
-                System.out.println("❗ Validation error: " + err.getDefaultMessage())
+                    System.out.println("❗ Validation error: " + err.getDefaultMessage())
             );
 
-            String returnUrl = resolveReturnUrl(request);
+            String returnUrl = resolveReturnUrl(request, mode);
             model.addAttribute("returnUrl", returnUrl);
 
-            return "add-jobs"; // re-render form with errors
+            return mode == CrudMode.CREATE ? "add-jobs": "edit-jobs"; // re-render form with errors
         }
 
         User user = userService.getCurrentUser();
@@ -290,40 +354,6 @@ public class JobPostActivityController {
         JobPostActivity saved = jobPostActivityService.addNew(jobPostActivity);
 
         return "redirect:/dashboard";
-    }
-
-    @GetMapping("dashboard/edit/{id}")
-    public String editJob(@PathVariable("id") int id, Model model,
-                          HttpServletRequest request) {
-        String returnUrl = resolveReturnUrl(request);
-        model.addAttribute("returnUrl", returnUrl);
-
-        JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
-
-        model.addAttribute("jobPostActivity", jobPostActivity);
-        model.addAttribute("user", userService.getCurrentUserProfile());
-
-        return "add-jobs";
-    }
-
-    @DeleteMapping("/dashboard/delete-job/{id}")
-    public String deleteJob(@PathVariable("id") int id) {
-        jobPostActivityService.deleteOne(id);
-
-        return "redirect:/dashboard";
-    }
-
-    private String resolveReturnUrl(HttpServletRequest request) {
-        String referer = request.getHeader("Referer");
-        String returnUrl = (referer != null && !referer.endsWith("/dashboard/add") &&
-                !referer.endsWith("/dashboard/add-new"))
-                ? referer
-                : "/dashboard"; // Default fallback
-
-        System.out.println("referer: " + referer);
-        System.out.println("refernUrl: " + returnUrl);
-
-        return returnUrl;
     }
 
 }
