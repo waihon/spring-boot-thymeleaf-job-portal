@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <link th:rel="stylesheet" type="text/css" media="all" th:href="@{/summernote/summernote-lite.min.css}"/>
+    <link th:rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css} "/>
+    <link th:rel="stylesheet" type="text/css" media="all"  th:href="@{/css/font-awesome.min.css}" />
+    <link th:rel="stylesheet" type="text/css" media="all"  th:href="@{/css/styles.css}" />
+    <meta charset="ISO-8859-1">
+    <title th:text="${jobPostActivity.jobPostId == null ? 'Post New Job' : 'Edit Job'}">Profile Setup</title>
+</head>
+
+<body>
+
+<div style="display: flex">
+    <div class="col-md-5 coffee_mug_background">
+        <div class="logo_left mt-3 pt-4 ms-5 pl-5">
+            <h2 class="logo" style="color: white">
+                hotdevjobs <span class="logo_com">.com</span>
+            </h2>
+        </div>
+    </div>
+    <div class="col-md-7 container myForm">
+        <form id="job-main-form" th:action="@{/dashboard/save-edit}" th:object="${jobPostActivity}" method="post" class="job-edit-form">
+            <div th:replace="~{forms/job}"></div>
+        </form>
+
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/popper.js/umd/popper.min.js}"></script>
+<script type="text/javascript" th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script type="text/javascript" th:src="@{/summernote/summernote-lite.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
+
+<script>
+console.log($('#content'));
+    $('#content').summernote({
+        height: 300
+    });
+</script>
+
+</body>
+</html>
