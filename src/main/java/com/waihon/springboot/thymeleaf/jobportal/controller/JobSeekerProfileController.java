@@ -60,6 +60,9 @@ public class JobSeekerProfileController {
                     skills.add(new Skill());
                     jobSeekerProfile.setSkills(skills);
                 }
+                Boolean newProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
+                        !StringUtils.hasLength(jobSeekerProfile.getLastName());
+                model.addAttribute("newProfile", newProfile);
             }
 
             model.addAttribute("profile", jobSeekerProfile);
