@@ -1,7 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.JobSeekerProfile;
-import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.Skill;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
 import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
@@ -9,6 +8,8 @@ import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerProfileService
 import com.waihon.springboot.thymeleaf.jobportal.util.FileDownloadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.parameters.P;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,10 +28,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 @RequestMapping("/job-seeker-profile")
@@ -39,11 +36,14 @@ public class JobSeekerProfileController {
 
     private JobSeekerProfileService jobSeekerProfileService;
     private UserRepository userRepository;
+    private Validator validator;
 
     public JobSeekerProfileController(JobSeekerProfileService jobSeekerProfileService,
-                                      UserRepository userRepository) {
+                                      UserRepository userRepository,
+                                      Validator validator) {
         this.jobSeekerProfileService = jobSeekerProfileService;
         this.userRepository = userRepository;
+        this.validator = validator;
     }
 
     @GetMapping("")
@@ -77,11 +77,26 @@ public class JobSeekerProfileController {
     }
 
     @PostMapping("/add-new")
-    public String addNew(@Validated(OnUpdate.class) @ModelAttribute("profile") JobSeekerProfile jobSeekerProfile,
+    public String addNew(@ModelAttribute("profile") JobSeekerProfile jobSeekerProfile,
                          BindingResult result,
                          @RequestParam("image") MultipartFile image,
                          @RequestParam("pdf") MultipartFile pdf,
                          Model model) {
+        String resumeName = "";
+        if (pdf != null && !pdf.isEmpty()) {
+            if (!Objects.equals(pdf.getOriginalFilename(), "")) {
+                resumeName = StringUtils.cleanPath(Objects.requireNonNull(pdf.getOriginalFilename()));
+                jobSeekerProfile.setResume(resumeName);
+            }
+        }
+
+        // Manually trigger group-specific validation after resume is set
+        Set<ConstraintViolation<JobSeekerProfile>> violations = validator.validate(jobSeekerProfile, OnUpdate.class);
+        for (ConstraintViolation<JobSeekerProfile> v : violations) {
+            String field = v.getPropertyPath().toString();
+            result.rejectValue(field, "", v.getMessage());
+        }
+
         if (result.hasErrors()) {
             Boolean newProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
                     !StringUtils.hasLength(jobSeekerProfile.getLastName());
@@ -109,16 +124,9 @@ public class JobSeekerProfileController {
         }
 
         String imageName = "";
-        String resumeName = "";
-
         if (!Objects.equals(image.getOriginalFilename(), "")) {
             imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
             jobSeekerProfile.setProfilePhoto(imageName);
-        }
-
-        if (!Objects.equals(pdf.getOriginalFilename(), "")) {
-            resumeName = StringUtils.cleanPath(Objects.requireNonNull(pdf.getOriginalFilename()));
-            jobSeekerProfile.setResume(resumeName);
         }
 
         JobSeekerProfile seekerProfile = jobSeekerProfileService.addNew(jobSeekerProfile);
