@@ -29,6 +29,8 @@ public class JobSeekerProfile {
     private String country;
     private String workAuthorization;
     private String employmentType;
+
+    @NotBlank(groups = OnUpdate.class, message = "Resume is required.")
     private String resume;
 
     @Column(nullable = true, length = 64)
