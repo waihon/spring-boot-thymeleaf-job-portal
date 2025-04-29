@@ -1,12 +1,14 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.JobSeekerProfile;
+import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.Skill;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
 import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileDownloadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
+import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,6 +22,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,10 +77,19 @@ public class JobSeekerProfileController {
     }
 
     @PostMapping("/add-new")
-    public String addNew(JobSeekerProfile jobSeekerProfile,
+    public String addNew(@Validated(OnUpdate.class) @ModelAttribute("profile") JobSeekerProfile jobSeekerProfile,
+                         BindingResult result,
                          @RequestParam("image") MultipartFile image,
                          @RequestParam("pdf") MultipartFile pdf,
                          Model model) {
+        if (result.hasErrors()) {
+            Boolean newProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
+                    !StringUtils.hasLength(jobSeekerProfile.getLastName());
+            model.addAttribute("newProfile", newProfile);
+
+            return "job-seeker-profile"; // re-render form with errors
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (!(authentication instanceof AnonymousAuthenticationToken)) {

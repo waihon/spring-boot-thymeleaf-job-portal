@@ -65,6 +65,7 @@
                                         type="text"
                                         class="form-control"
                                 />
+                                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger small"></span>
                             </div>
                             <div class="col-md-6 pl-1">
                                 <input
@@ -75,6 +76,7 @@
                                         type="text"
                                         class="form-control"
                                 />
+                                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger small"></span>
                             </div>
                         </div>
                         <div class="row ">
@@ -211,7 +213,6 @@
                                         type="file"
                                         name="pdf"
                                         class="form-control"
-                                        required="true"
                                         accept="application/pdf"
                                 />
                                 <input type="text" name="resume" th:field="*{resume}" class="form-control" hidden/>
