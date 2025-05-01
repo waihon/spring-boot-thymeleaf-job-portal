@@ -143,8 +143,8 @@
                             </div>
                         </div>
                         <label class=" heading_font font_sub_heading_color">Skills</label >
-                        <div class="parent" th:each="skill, iterStat : *{skills}">
-                            <div id="skill-repeat">
+                        <div class="parent">
+                            <div class="skill-repeat" th:each="skill, iterStat : *{skills}">
                                 <div class="row">
                                     <div class="col-md-4 pr-1">
                                         <input
@@ -261,11 +261,12 @@
     $("button").prop( "disabled", true );
 </script>
 <script>
-    var counter = 0;
+    var counter = $(".skill-repeat").length - 1; // count existing skills on page load
+
     $(document).on("click", "#addSkill", function (e) {
         e.preventDefault();
         counter++;
-        var newRow = jQuery("<div id='skill-repeat'><div class='row'>"+
+        var newRow = jQuery("<div class='skill-repeat'><div class='row'>"+
                    "    <div class='col-md-4 pr-1'>"+
                    "     <input"+
                    "        hidden type='text'"+
@@ -289,11 +290,10 @@
                    "    </div>"+
                    "    <div class='form-group col-md-4 pl-1'>"+
                    "      <select"+
-                   "        required"+
                    "        class='form-control'"+
                    "        name='skills["+counter+"].experienceLevel'"+
                    "      >"+
-                   "        <option selected>Experience Level</option>"+
+                   "        <option value='' selected>Experience Level</option>"+
                    "        <option value='Beginner'>Beginner</option>"+
                    "        <option value='Intermediate'>Intermediate</option>"+
                    "        <option value='Advance'>Advance</option>"+
@@ -302,9 +302,8 @@
                    "  </div>"+
                    "</div>");
         console.log(newRow);
-       $('#skill-repeat')
-         .parent('div.parent')
-         .append(newRow);
+        // Append to the container that holds all skill rows
+        $('div.parent').append(newRow);
      });
 </script>
 </html>
