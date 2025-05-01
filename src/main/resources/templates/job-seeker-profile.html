@@ -46,6 +46,11 @@
                             </h2>
                         </div>
                     </div>
+
+                    <div th:if="${#fields.hasGlobalErrors()}" class="text-danger small">
+                        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+                    </div>
+
                     <div class="col-md-12">
                         <label class="heading_font font_sub_heading_color">Name</label>
                         <div class="row">
@@ -112,7 +117,6 @@
                         <div class="row">
                             <div class="form-group col-md-6 pr-1">
                                 <select
-                                        required
                                         class="form-control"
                                         name="workAuthorization"
                                         th:field="*{workAuthorization}"
@@ -127,7 +131,6 @@
                             </div>
                             <div class="form-group col-md-6 pl-1">
                                 <select
-                                        required
                                         class="form-control"
                                         name="employmentType"
                                         th:field="*{employmentType}"
@@ -166,11 +169,10 @@
                                     </div>
                                     <div class="form-group col-md-4 pl-1">
                                         <select
-                                                required
                                                 class="form-control"
                                                 th:field="*{skills[__${iterStat.index}__].experienceLevel}"
                                         >
-                                            <option value="Experience Level" selected>Experience Level</option>
+                                            <option value="" selected>Experience Level</option>
                                             <option value="Beginner">Beginner</option>
                                             <option value="Intermediate">Intermediate</option>
                                             <option value="Advance">Advance</option>
