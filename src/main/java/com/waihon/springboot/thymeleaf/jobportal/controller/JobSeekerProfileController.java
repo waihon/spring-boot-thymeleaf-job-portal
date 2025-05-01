@@ -7,6 +7,7 @@ import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileDownloadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
+import com.waihon.springboot.thymeleaf.jobportal.util.SkillUtils;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -126,7 +127,11 @@ public class JobSeekerProfileController {
         model.addAttribute("profile", jobSeekerProfile);
         model.addAttribute("skills", skillsList);
 
-        for (Skill skill : jobSeekerProfile.getSkills()) {
+        List<Skill> filteredSkills = SkillUtils.filterEmptySkills(jobSeekerProfile.getSkills());
+
+        jobSeekerProfile.setSkills(filteredSkills);
+
+        for (Skill skill : filteredSkills) {
             skill.setJobSeekerProfile(jobSeekerProfile);
         }
 
