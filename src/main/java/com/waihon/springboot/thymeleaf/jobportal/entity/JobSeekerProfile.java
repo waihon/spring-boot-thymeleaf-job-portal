@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.entity;
 
+import com.waihon.springboot.thymeleaf.jobportal.validation.AtLeastOneSkill;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "job_seeker_profiles")
+@AtLeastOneSkill(groups = OnUpdate.class)
 public class JobSeekerProfile {
 
     @Id

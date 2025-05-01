@@ -94,7 +94,14 @@ public class JobSeekerProfileController {
         Set<ConstraintViolation<JobSeekerProfile>> violations = validator.validate(jobSeekerProfile, OnUpdate.class);
         for (ConstraintViolation<JobSeekerProfile> v : violations) {
             String field = v.getPropertyPath().toString();
-            result.rejectValue(field, "", v.getMessage());
+
+            if (field == null || field.isBlank()) {
+                // Class-level constraint - use reject (global error)
+                result.reject("", v.getMessage());
+            } else {
+                // Field-level constraint - use rejectValue
+                result.rejectValue(field, "", v.getMessage());
+            }
         }
 
         if (result.hasErrors()) {
