@@ -2,8 +2,8 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
-import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
 import com.waihon.springboot.thymeleaf.jobportal.service.RecruiterProfileService;
+import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnCreate;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
@@ -30,12 +30,12 @@ import java.util.Optional;
 @RequestMapping("/recruiter-profile")
 public class RecruiterProfileController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final RecruiterProfileService recruiterProfileService;
 
     @Autowired
-    public RecruiterProfileController(UserRepository userRepository, RecruiterProfileService recruiterProfileService) {
-        this.userRepository = userRepository;
+    public RecruiterProfileController(UserService userService, RecruiterProfileService recruiterProfileService) {
+        this.userService = userService;
         this.recruiterProfileService = recruiterProfileService;
     }
 
@@ -45,7 +45,7 @@ public class RecruiterProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUsername = authentication.getName();
-            User user = userRepository.findByEmail(currentUsername)
+            User user = userService.getUserByEmail(currentUsername)
                     .orElseThrow(() -> new UsernameNotFoundException("Could not find user"));
 
             Optional<RecruiterProfile> recruiterProfile = recruiterProfileService.getOne(user.getUserId());
@@ -77,7 +77,7 @@ public class RecruiterProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof  AnonymousAuthenticationToken)) {
             String currentUsername = authentication.getName();
-            User user = userRepository.findByEmail(currentUsername)
+            User user = userService.getUserByEmail(currentUsername)
                     .orElseThrow(() -> new UsernameNotFoundException("Could not find user"));
             recruiterProfile.setUser(user);
             recruiterProfile.setUserAccountId(user.getUserId());
