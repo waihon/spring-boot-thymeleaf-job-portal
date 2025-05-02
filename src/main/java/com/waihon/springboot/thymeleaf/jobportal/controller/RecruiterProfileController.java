@@ -51,9 +51,9 @@ public class RecruiterProfileController {
             Optional<RecruiterProfile> recruiterProfile = recruiterProfileService.getOne(user.getUserId());
             recruiterProfile.ifPresent(profile -> {
                 model.addAttribute("profile", profile);
-                Boolean newProfile = !StringUtils.hasLength(profile.getFirstName()) ||
+                Boolean isNewProfile = !StringUtils.hasLength(profile.getFirstName()) ||
                         !StringUtils.hasLength(profile.getLastName());
-                model.addAttribute("newProfile", newProfile);
+                model.addAttribute("isNewProfile", isNewProfile);
             });
         }
 
@@ -66,9 +66,9 @@ public class RecruiterProfileController {
                          @RequestParam("image")MultipartFile multipartFile,
                          Model model) {
         if (result.hasErrors()) {
-            Boolean newProfile = !StringUtils.hasLength(recruiterProfile.getFirstName()) ||
+            Boolean isNewProfile = !StringUtils.hasLength(recruiterProfile.getFirstName()) ||
                     !StringUtils.hasLength(recruiterProfile.getLastName());
-            model.addAttribute("newProfile", newProfile);
+            model.addAttribute("isNewProfile", isNewProfile);
 
             return "recruiter-profile"; // re-render form with errors
         }
@@ -93,11 +93,11 @@ public class RecruiterProfileController {
         }
 
         // Save recruiter profile to DB
-        RecruiterProfile savedUser = recruiterProfileService.addNew(recruiterProfile);
+        RecruiterProfile savedProfile = recruiterProfileService.addNew(recruiterProfile);
 
         // Read profile image from request's multipart file and save image
         // on the server in directory: photos/recruiter
-        String uploadDir = "photos/recruiter/" + savedUser.getUserAccountId();
+        String uploadDir = "photos/recruiter/" + savedProfile.getUserAccountId();
         try {
             FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
         } catch (Exception ex) {
