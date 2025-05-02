@@ -58,7 +58,8 @@ public class UserController {
                     "Email already registered, try to log in or register with other email.");
             List<UserType> userTypes = userTypeService.getAll();
             model.addAttribute("userTypes", userTypes);
-            model.addAttribute("user", new User());
+            // Use passed-in `user` instead of a new `user` to retain previous input.
+            model.addAttribute("user", user);
 
             return "register";
         }
@@ -66,18 +67,12 @@ public class UserController {
         String username = user.getEmail();
         // For creating an authentication token, a clear password prior to persisting the user is required.
         // After persisting the user, the password field contains encoded password.
+        // Therefore, storing a clear password in a variable for usage later on.
         String password = user.getPassword();
         userService.addNew(user);
 
-        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
-                SecurityContextHolder.getContext());
-
-        UsernamePasswordAuthenticationToken token = new
-                UsernamePasswordAuthenticationToken(username, password);
-        token.setDetails(new WebAuthenticationDetails(request));
-
-        Authentication authentication = authenticationManager.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        // Auto log in a newly registered user.
+        loginRegisteredUser(request, username, password);
 
         return "redirect:/dashboard";
     }
@@ -95,6 +90,18 @@ public class UserController {
         }
 
         return "redirect:/";
+    }
+
+    private void loginRegisteredUser(HttpServletRequest request, String username, String password) {
+        request.getSession().setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                SecurityContextHolder.getContext());
+
+        UsernamePasswordAuthenticationToken token = new
+                UsernamePasswordAuthenticationToken(username, password);
+        token.setDetails(new WebAuthenticationDetails(request));
+
+        Authentication authentication = authenticationManager.authenticate(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
 }
