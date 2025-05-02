@@ -83,8 +83,6 @@ public class RecruiterProfileController {
             recruiterProfile.setUserAccountId(user.getUserId());
         }
 
-        model.addAttribute("profile", recruiterProfile);
-
         // Set image name in recruiter profile
         String fileName = "";
         if (!multipartFile.getOriginalFilename().equals("")) {
