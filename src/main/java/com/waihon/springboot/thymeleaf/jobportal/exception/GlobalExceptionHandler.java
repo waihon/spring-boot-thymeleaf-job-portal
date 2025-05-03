@@ -9,6 +9,12 @@ import org.springframework.web.servlet.view.RedirectView;
 @ControllerAdvice(annotations = Controller.class)
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(FileUploadException.class)
+    public RedirectView handleFileUploadException(FileUploadException ex, RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("customError", ex.getMessage());
+        return new RedirectView("/login");
+    }
+
     @ExceptionHandler(UserNotFoundException.class)
     public RedirectView handleUserNotFoundException(UserNotFoundException ex, RedirectAttributes redirectAttributes) {
         redirectAttributes.addFlashAttribute("customError", ex.getMessage());
