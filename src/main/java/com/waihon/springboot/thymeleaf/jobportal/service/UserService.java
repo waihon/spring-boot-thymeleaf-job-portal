@@ -3,6 +3,7 @@ package com.waihon.springboot.thymeleaf.jobportal.service;
 import com.waihon.springboot.thymeleaf.jobportal.entity.JobSeekerProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
+import com.waihon.springboot.thymeleaf.jobportal.exception.UserNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.repository.JobSeekerProfileRepository;
 import com.waihon.springboot.thymeleaf.jobportal.repository.RecruiterProfileRepository;
 import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
@@ -91,7 +92,7 @@ public class UserService {
 
     public User findByEmail(String currentUsername) {
         return userRepository.findByEmail(currentUsername)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("Could not find user with email: " + currentUsername));
     }
 
 }
