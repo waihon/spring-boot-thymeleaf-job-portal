@@ -66,39 +66,48 @@ public class RecruiterProfileController {
                          BindingResult result,
                          @RequestParam("image")MultipartFile multipartFile,
                          Model model) throws FileUploadException {
-        if (result.hasErrors()) {
-            Boolean isNewProfile = !StringUtils.hasLength(recruiterProfile.getFirstName()) ||
-                    !StringUtils.hasLength(recruiterProfile.getLastName());
-            model.addAttribute("isNewProfile", isNewProfile);
+        Boolean isNewProfile = !StringUtils.hasLength(recruiterProfile.getFirstName()) ||
+                !StringUtils.hasLength(recruiterProfile.getLastName());
+        model.addAttribute("isNewProfile", isNewProfile);
 
+        if (result.hasErrors()) {
             return "recruiter-profile"; // re-render form with errors
         }
 
-        // Associate recruiter profile with existing user account
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof  AnonymousAuthenticationToken)) {
-            String currentUsername = authentication.getName();
-            User user = userService.findByEmail(currentUsername);
-            recruiterProfile.setUser(user);
-            recruiterProfile.setUserAccountId(user.getUserId());
+        try {
+            // Associate recruiter profile with existing user account
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (!(authentication instanceof  AnonymousAuthenticationToken)) {
+                String currentUsername = authentication.getName();
+                User user = userService.findByEmail(currentUsername);
+                recruiterProfile.setUser(user);
+                recruiterProfile.setUserAccountId(user.getUserId());
+            }
+
+            // Set image name in recruiter profile
+            String fileName = "";
+            if (!multipartFile.getOriginalFilename().equals("")) {
+                fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+                recruiterProfile.setProfilePhoto(fileName);
+            }
+
+            // Save recruiter profile to DB
+            RecruiterProfile savedProfile = recruiterProfileService.addNew(recruiterProfile);
+
+            // Read profile image from request's multipart file and save image
+            // on the server in directory: photos/recruiter
+            String uploadDir = "photos/recruiter/" + savedProfile.getUserAccountId();
+            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
+
+            return "redirect:/dashboard";
+
+        } catch (FileUploadException ex) {
+            // Add global error message to BindingResult
+            result.reject("file.upload.error", ex.getMessage());
+
+            // Return to the profile form with error
+            return "recruiter-profile";
         }
-
-        // Set image name in recruiter profile
-        String fileName = "";
-        if (!multipartFile.getOriginalFilename().equals("")) {
-            fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-            recruiterProfile.setProfilePhoto(fileName);
-        }
-
-        // Save recruiter profile to DB
-        RecruiterProfile savedProfile = recruiterProfileService.addNew(recruiterProfile);
-
-        // Read profile image from request's multipart file and save image
-        // on the server in directory: photos/recruiter
-        String uploadDir = "photos/recruiter/" + savedProfile.getUserAccountId();
-        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-
-        return "redirect:/dashboard";
     }
 
 }
