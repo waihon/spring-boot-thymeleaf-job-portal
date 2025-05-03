@@ -2,6 +2,7 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
+import com.waihon.springboot.thymeleaf.jobportal.exception.UserNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.service.RecruiterProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
@@ -45,8 +46,7 @@ public class RecruiterProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUsername = authentication.getName();
-            User user = userService.getUserByEmail(currentUsername)
-                    .orElseThrow(() -> new UsernameNotFoundException("Could not find user"));
+            User user = userService.findByEmail(currentUsername);
 
             Optional<RecruiterProfile> recruiterProfile = recruiterProfileService.getOne(user.getUserId());
             recruiterProfile.ifPresent(profile -> {
@@ -77,8 +77,7 @@ public class RecruiterProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof  AnonymousAuthenticationToken)) {
             String currentUsername = authentication.getName();
-            User user = userService.getUserByEmail(currentUsername)
-                    .orElseThrow(() -> new UsernameNotFoundException("Could not find user"));
+            User user = userService.findByEmail(currentUsername);
             recruiterProfile.setUser(user);
             recruiterProfile.setUserAccountId(user.getUserId());
         }
