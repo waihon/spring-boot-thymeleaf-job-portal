@@ -2,6 +2,7 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
+import com.waihon.springboot.thymeleaf.jobportal.exception.FileUploadException;
 import com.waihon.springboot.thymeleaf.jobportal.exception.UserNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.service.RecruiterProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
@@ -64,7 +65,7 @@ public class RecruiterProfileController {
     public String addNew(@Validated(OnUpdate.class) @ModelAttribute("profile") RecruiterProfile recruiterProfile,
                          BindingResult result,
                          @RequestParam("image")MultipartFile multipartFile,
-                         Model model) {
+                         Model model) throws FileUploadException {
         if (result.hasErrors()) {
             Boolean isNewProfile = !StringUtils.hasLength(recruiterProfile.getFirstName()) ||
                     !StringUtils.hasLength(recruiterProfile.getLastName());
@@ -95,11 +96,7 @@ public class RecruiterProfileController {
         // Read profile image from request's multipart file and save image
         // on the server in directory: photos/recruiter
         String uploadDir = "photos/recruiter/" + savedProfile.getUserAccountId();
-        try {
-            FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+        FileUploadUtil.saveFile(uploadDir, fileName, multipartFile);
 
         return "redirect:/dashboard";
     }

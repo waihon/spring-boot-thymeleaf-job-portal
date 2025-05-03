@@ -3,6 +3,7 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 import com.waihon.springboot.thymeleaf.jobportal.entity.JobSeekerProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.Skill;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
+import com.waihon.springboot.thymeleaf.jobportal.exception.FileUploadException;
 import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerProfileService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileDownloadUtil;
@@ -152,7 +153,7 @@ public class JobSeekerProfileController {
                 FileUploadUtil.saveFile(uploadDir, resumeName, pdf);
             }
 
-        } catch (IOException ex) {
+        } catch (FileUploadException ex) {
             throw new RuntimeException(ex);
         }
 
