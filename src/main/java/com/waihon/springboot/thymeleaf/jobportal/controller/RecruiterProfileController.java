@@ -47,7 +47,17 @@ public class RecruiterProfileController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             String currentUsername = authentication.getName();
-            User user = userService.findByEmail(currentUsername);
+            User user;
+            try {
+                user = userService.findByEmail(currentUsername);
+            } catch (UserNotFoundException ex) {
+                model.addAttribute("globalError", ex.getMessage());
+                model.addAttribute("profile", new RecruiterProfile());
+                model.addAttribute("canContinue", false);
+
+                // Return to the profile form with error
+                return "recruiter-profile";
+            }
 
             Optional<RecruiterProfile> recruiterProfile = recruiterProfileService.getOne(user.getUserId());
             recruiterProfile.ifPresent(profile -> {
@@ -102,8 +112,8 @@ public class RecruiterProfileController {
             return "redirect:/dashboard";
 
         } catch (FileUploadException ex) {
-            // Add global error message to BindingResult
-            result.reject("file.upload.error", ex.getMessage());
+            model.addAttribute("globalError", ex.getMessage());
+            model.addAttribute("canContinue", true);
 
             // Return to the profile form with error
             return "recruiter-profile";
