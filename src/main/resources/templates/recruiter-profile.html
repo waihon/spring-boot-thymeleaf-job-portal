@@ -46,6 +46,10 @@
                                     <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
                                 </ul>
                             </div>
+                            <div th:if="${globalError}" class="alert alert-danger">
+                                <span th:text="${globalError}"></span>
+                            </div>
+
 
                             <div class="card-body ms-2.5">
                                 <label class="heading_font font_sub_heading_color">Name</label>
@@ -85,7 +89,12 @@
                                 </div>
                                 <div class="row mt-4" >
                                     <div class="col d-flex justify-content-center">
-                                        <button type="submit" id="submit2" name="submit" class="btn btn-primary base_button px-4 py-2">Save</button>
+                                        <button type="submit" id="submit2" name="submit"
+                                                class="base_button px-4 py-2"
+                                                th:classappend="${canContinue == false ? 'btn btn-secondary' :  'btn btn-primary'}"
+                                                th:disabled="${canContinue == false}">
+                                            Save
+                                        </button>
                                         <a th:href="@{/dashboard}" class="btn btn-secondary base_button px-4 py-2 ms-2">Cancel</a>
                                     </div>
                                 </div>
