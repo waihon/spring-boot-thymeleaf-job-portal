@@ -1,11 +1,13 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.JobSeekerProfile;
+import com.waihon.springboot.thymeleaf.jobportal.entity.RecruiterProfile;
 import com.waihon.springboot.thymeleaf.jobportal.entity.Skill;
 import com.waihon.springboot.thymeleaf.jobportal.entity.User;
 import com.waihon.springboot.thymeleaf.jobportal.exception.FileUploadException;
-import com.waihon.springboot.thymeleaf.jobportal.repository.UserRepository;
+import com.waihon.springboot.thymeleaf.jobportal.exception.UserNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerProfileService;
+import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileDownloadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.util.FileUploadUtil;
 import com.waihon.springboot.thymeleaf.jobportal.util.SkillUtils;
@@ -37,28 +39,31 @@ import java.util.*;
 public class JobSeekerProfileController {
 
     private JobSeekerProfileService jobSeekerProfileService;
-    private UserRepository userRepository;
+    private UserService userService;
     private Validator validator;
 
     public JobSeekerProfileController(JobSeekerProfileService jobSeekerProfileService,
-                                      UserRepository userRepository,
+                                      UserService userService,
                                       Validator validator) {
         this.jobSeekerProfileService = jobSeekerProfileService;
-        this.userRepository = userRepository;
+        this.userService = userService;
         this.validator = validator;
     }
 
     @GetMapping("")
     public String jobSeekerProfile(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+
         model.addAttribute("currentPage", "job-seeker-profile");
 
-        JobSeekerProfile jobSeekerProfile = new JobSeekerProfile();
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<Skill> skills = new ArrayList<>();
+        try {
+            JobSeekerProfile jobSeekerProfile = new JobSeekerProfile();
+            List<Skill> skills = new ArrayList<>();
+            User user = userService.findByEmail(authentication.getName());
 
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            User user = userRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
             Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(user.getUserId());
             if (seekerProfile.isPresent()) {
                 jobSeekerProfile = seekerProfile.get();
@@ -66,13 +71,22 @@ public class JobSeekerProfileController {
                     skills.add(new Skill());
                     jobSeekerProfile.setSkills(skills);
                 }
-                Boolean newProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
+                Boolean isNewProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
                         !StringUtils.hasLength(jobSeekerProfile.getLastName());
-                model.addAttribute("newProfile", newProfile);
+                model.addAttribute("isNewProfile", isNewProfile);
+            } else {
+                throw new UserNotFoundException("Job Seek Profile with ID '" + user.getUserId() + "' is not found.");
             }
 
             model.addAttribute("profile", jobSeekerProfile);
             model.addAttribute("skills", skills);
+            model.addAttribute("canContinue", true);
+
+        } catch (UserNotFoundException ex) {
+            model.addAttribute("profile", new JobSeekerProfile());
+            model.addAttribute("skills", new ArrayList<Skill>());
+            model.addAttribute("canContinue", false);
+            model.addAttribute("globalError", ex.getMessage());
         }
 
         return "job-seeker-profile";
