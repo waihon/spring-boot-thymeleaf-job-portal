@@ -4,6 +4,7 @@ import com.waihon.springboot.thymeleaf.jobportal.validation.AtLeastOneSkill;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -167,7 +168,7 @@ public class JobSeekerProfile {
 
     @Transient
     public String getPhotoImagePath() {
-        if (profilePhoto == null || userAccountId == null) return null;
+        if (!StringUtils.hasText(profilePhoto) || userAccountId == null) return null;
 
         return "/photos/candidate/" + userAccountId + "/" + profilePhoto;
     }

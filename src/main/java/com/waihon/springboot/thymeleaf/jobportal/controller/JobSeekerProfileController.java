@@ -71,8 +71,8 @@ public class JobSeekerProfileController {
                     skills.add(new Skill());
                     jobSeekerProfile.setSkills(skills);
                 }
-                Boolean isNewProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
-                        !StringUtils.hasLength(jobSeekerProfile.getLastName());
+                Boolean isNewProfile = !StringUtils.hasText(jobSeekerProfile.getFirstName()) ||
+                        !StringUtils.hasText(jobSeekerProfile.getLastName());
                 model.addAttribute("isNewProfile", isNewProfile);
             } else {
                 throw new UserNotFoundException("Job Seek Profile with ID '" + user.getUserId() + "' is not found.");
@@ -98,6 +98,15 @@ public class JobSeekerProfileController {
                          @RequestParam("image") MultipartFile image,
                          @RequestParam("pdf") MultipartFile pdf,
                          Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+
+        // On the front-end, there are 2 resume-related input of type file and text, respectively.
+        // When the file input is not empty, update the underlying resume field, which is bound
+        // to text input on the front-end.
+        // This is placed near to top ahead of manual validation beneath it.
         String resumeName = "";
         if (pdf != null && !pdf.isEmpty()) {
             if (!Objects.equals(pdf.getOriginalFilename(), "")) {
@@ -121,44 +130,19 @@ public class JobSeekerProfileController {
         }
 
         if (result.hasErrors()) {
-            Boolean newProfile = !StringUtils.hasLength(jobSeekerProfile.getFirstName()) ||
-                    !StringUtils.hasLength(jobSeekerProfile.getLastName());
-            model.addAttribute("newProfile", newProfile);
+            Boolean isNewProfile = !StringUtils.hasText(jobSeekerProfile.getFirstName()) ||
+                    !StringUtils.hasText(jobSeekerProfile.getLastName());
+            model.addAttribute("isNewProfile", isNewProfile);
 
             return "job-seeker-profile"; // re-render form with errors
         }
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            User user = userRepository.findByEmail(authentication.getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found."));
-            jobSeekerProfile.setUser(user);
-            jobSeekerProfile.setUserAccountId(user.getUserId());
-        }
-
-        List<Skill> skillsList = new ArrayList<>();
-
-        model.addAttribute("profile", jobSeekerProfile);
-        model.addAttribute("skills", skillsList);
-
-        List<Skill> filteredSkills = SkillUtils.filterEmptySkills(jobSeekerProfile.getSkills());
-
-        jobSeekerProfile.setSkills(filteredSkills);
-
-        for (Skill skill : filteredSkills) {
-            skill.setJobSeekerProfile(jobSeekerProfile);
-        }
-
-        String imageName = "";
-        if (!Objects.equals(image.getOriginalFilename(), "")) {
-            imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
-            jobSeekerProfile.setProfilePhoto(imageName);
-        }
-
-        JobSeekerProfile seekerProfile = jobSeekerProfileService.addNew(jobSeekerProfile);
-
         try {
+            String imageName = "";
+            if (!Objects.equals(image.getOriginalFilename(), "")) {
+                imageName = StringUtils.cleanPath(Objects.requireNonNull(image.getOriginalFilename()));
+            }
+
             String uploadDir = "photos/candidate/" + jobSeekerProfile.getUserAccountId();
             if (!Objects.equals(image.getOriginalFilename(), "")) {
                 FileUploadUtil.saveFile(uploadDir, imageName, image);
@@ -167,8 +151,31 @@ public class JobSeekerProfileController {
                 FileUploadUtil.saveFile(uploadDir, resumeName, pdf);
             }
 
-        } catch (FileUploadException ex) {
-            throw new RuntimeException(ex);
+            User user = userService.findByEmail(authentication.getName());
+            jobSeekerProfile.setUser(user);
+            jobSeekerProfile.setUserAccountId(user.getUserId());
+
+            List<Skill> filteredSkills = SkillUtils.filterEmptySkills(jobSeekerProfile.getSkills());
+            jobSeekerProfile.setSkills(filteredSkills);
+
+            for (Skill skill : filteredSkills) {
+                skill.setJobSeekerProfile(jobSeekerProfile);
+            }
+
+            if (StringUtils.hasText(imageName)) {
+                jobSeekerProfile.setProfilePhoto(imageName);
+            }
+
+            JobSeekerProfile seekerProfile = jobSeekerProfileService.addNew(jobSeekerProfile);
+
+            model.addAttribute("profile", jobSeekerProfile);
+
+        } catch (UserNotFoundException | FileUploadException ex) {
+            model.addAttribute("globalError", ex.getMessage());
+            model.addAttribute("canContinue", true);
+
+            // Return to the profile form with error
+            return "job-seeker-profile";
         }
 
         return "redirect:/dashboard";
