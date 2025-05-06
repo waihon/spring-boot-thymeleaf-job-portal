@@ -168,8 +168,6 @@ public class JobSeekerProfileController {
 
             JobSeekerProfile seekerProfile = jobSeekerProfileService.addNew(jobSeekerProfile);
 
-            model.addAttribute("profile", jobSeekerProfile);
-
         } catch (UserNotFoundException | FileUploadException ex) {
             model.addAttribute("globalError", ex.getMessage());
             model.addAttribute("canContinue", true);
