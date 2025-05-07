@@ -3,13 +3,14 @@ package com.waihon.springboot.thymeleaf.jobportal.entity;
 import com.waihon.springboot.thymeleaf.jobportal.validation.OnUpdate;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.springframework.util.StringUtils;
 
 @Entity
 @Table(name = "recruiter_profiles")
 public class RecruiterProfile {
 
     @Id
-    private int userAccountId;
+    private Integer userAccountId;
 
     @OneToOne
     @JoinColumn(name = "user_account_id")
@@ -125,7 +126,7 @@ public class RecruiterProfile {
 
     @Transient
     public String getPhotoImagePath() {
-        if (profilePhoto == null) return null;
+        if (!StringUtils.hasText(profilePhoto) || userAccountId == null) return null;
         return "/photos/recruiter/" + userAccountId + "/" + profilePhoto;
     }
 
