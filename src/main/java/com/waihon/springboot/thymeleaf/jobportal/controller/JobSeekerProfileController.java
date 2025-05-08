@@ -206,11 +206,22 @@ public class JobSeekerProfileController {
             return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
         }
 
+        // This is a generic binary data type.
+        // Most browsers will force a download, because the file type is unknown.
+        // This contrasts with "application/pdf", where most browsers will try to
+        // open the file in-browser using a built-in or plugin PDF viewer.
         String contentType = "application/octet-stream";
+        // Disposition type:
+        // o inline:     This suggests that the content should be displayed directly within the browser
+        //               if it has the capabilities to do so.
+        // o attachment: This signals that the content should be downloaded as a file. The browser
+        //               will typically present a "Save As..." dialog to the user.
         String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
+                // A response header that tells the client (usually a web browser) how
+                // the server expects the contents of the response to be handled.
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
                 .body(resource);
     }
