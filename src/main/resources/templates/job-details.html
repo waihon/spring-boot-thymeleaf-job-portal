@@ -42,6 +42,10 @@
             <a class="mt-3 ms-3 primary" id="back-link"><i class="fa-solid fa-angle-left me-1"></i>
                 Back to Search Results
             </a>
+
+            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
             <h1 class="primary-title mt-3"> Job Details </h1>
             <div class="ms-3">
                 <h4 th:text="${jobDetails.jobTitle}" class="job-title text-left">Software Engineer</h4>

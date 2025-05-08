@@ -1,6 +1,7 @@
 package com.waihon.springboot.thymeleaf.jobportal.service;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
+import com.waihon.springboot.thymeleaf.jobportal.exception.JobNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.repository.JobPostActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +40,7 @@ public class JobPostActivityService {
 
     public JobPostActivity getOne(int id) {
         return jobPostActivityRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Job not found"));
+                .orElseThrow(() -> new JobNotFoundException("Job ID '" + id + "' not found."));
     }
 
     public void deleteOne(Integer id) {
