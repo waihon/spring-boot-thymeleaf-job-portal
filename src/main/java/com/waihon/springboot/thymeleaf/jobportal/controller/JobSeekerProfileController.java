@@ -183,6 +183,8 @@ public class JobSeekerProfileController {
     public String candidateProfile(@PathVariable("id") int id, Model model) {
         Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(id);
 
+        // This is for showing Job Seeker Profile in read-only mode.
+        // All related entities such as skills are populated.
         model.addAttribute("profile", seekerProfile.get());
 
         return "job-seeker-profile";
