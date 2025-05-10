@@ -25,7 +25,7 @@
     </script>
 </head>
 
-<body th:object="${jobDetails}" style="font-family: 'Montserrat';height: 100%">
+<body th:object="${jobPost}" style="font-family: 'Montserrat';height: 100%">
 
 <div th:replace="~{layouts/header :: navbar}"></div>
 
@@ -48,11 +48,11 @@
 
             <h1 class="primary-title mt-3"> Job Details </h1>
             <div class="ms-3">
-                <h4 th:text="${jobDetails.jobTitle}" class="job-title text-left">Software Engineer</h4>
+                <h4 th:text="*{jobTitle}" class="job-title text-left">Software Engineer</h4>
                 <div class="mt-1">
-                    <p th:text="${jobDetails.jobLocation.city + ', ' + jobDetails.jobLocation.state}"
+                    <p th:text="*{jobLocation.city + ', ' + jobLocation.state}"
                        class="m-0"> California, USA</p>
-                    <p th:text="${jobDetails.jobCompany.name}">Company</p>
+                    <p th:text="*{jobCompany.name}">Company</p>
                 </div>
             </div>
         </div>
@@ -64,17 +64,17 @@
                 <div class="row ">
                     <div class="col-md-3">
                         <label class="text-left">Date Posted:
-                            <span th:text="${jobDetails.postedDate}">12 Nov, 2030</span>
+                            <span th:text="*{postedDate}">12 Nov, 2030</span>
                         </label>
                     </div>
                     <div class="col-md-3 text-center">
-                        <label> Salary: <span th:text="${jobDetails.salary}">50k - 120k/y</span></label>
+                        <label> Salary: <span th:text="*{salary}">50k - 120k/y</span></label>
                     </div>
                     <div class="col-md-3 text-center">
-                        <label>Type: <span th:text="${jobDetails.jobType}"> Full-time</span></label>
+                        <label>Type: <span th:text="*{jobType}"> Full-time</span></label>
                     </div>
                     <div class="col-md-3 text-right">
-                        <label>Remote: <span th:text="${jobDetails.remote}">Remote</span></label>
+                        <label>Remote: <span th:text="*{remote}">Remote</span></label>
                     </div>
                 </div>
             </div>
@@ -82,7 +82,7 @@
             <div class="px-3 mb-3" sec:authorize="hasAuthority('Job Seeker')">
                 <label class="large-label "> Job Description </label>
                 <!-- Use utext to not escape HTML in order to show rich text -->
-                <div th:utext="${jobDetails.descriptionOfJob}"></div>
+                <div th:utext="*{descriptionOfJob}"></div>
             </div>
 
             <div class="px-3 mb-3" sec:authorize="hasAuthority('Recruiter')">
@@ -90,12 +90,12 @@
                     <div class="col-md-9">
                         <label class="large-label "> Job Description </label>
                         <!-- Use utext to not escape HTML in order to show rich text -->
-                        <div th:utext="${jobDetails.descriptionOfJob}"></div>
+                        <div th:utext="*{descriptionOfJob}"></div>
                     </div>
                     <div class="col-md-3 centerCandidate">
                         <div class="candidatesApplied">
                             <label>Candidates Applied for Job</label>
-                            <th:block th:each="apply : ${applyList}">
+                            <th:block th:each="apply : ${jobSeekerApplyList}">
                                 <a th:href="@{/job-seeker-profile/{id}(id=${apply.user.userAccountId})}"
                                    class="white"
                                    th:text="${apply.user.firstName + ', ' + apply.user.lastName}">FirstName, LastName</a>
@@ -108,7 +108,7 @@
             <div class="mt-3 px-3" sec:authorize="hasAuthority('Job Seeker')">
                 <div class="row">
                     <div class="col-md-3">
-                        <form th:action="@{/job-details/apply/{id}(id=${jobDetails.jobPostId})}" th:object="${applyJob}" method="post">
+                        <form th:action="@{/job-details/apply/{id}(id=${jobPost.jobPostId})}" th:object="${jobSeekerApply}" method="post">
                             <button class="btn-sec btn-red w-100" type="submit" th:if="${alreadyApplied == false}">
                                 Apply Now
                             </button>
@@ -118,7 +118,7 @@
                         </form>
                     </div>
                     <div class="col-md-3">
-                        <form th:action="@{/job-details/save/{id}(id=${jobDetails.jobPostId})}" th:object="${applyJob}" method="post">
+                        <form th:action="@{/job-details/save/{id}(id=${jobPost.jobPostId})}" th:object="${jobSeekerApply}" method="post">
                             <button class="btn-sec btn-black w-100" type="submit" th:if="${alreadySaved == false}">
                                 Save Job
                             </button>
@@ -134,14 +134,14 @@
                 <div class="row">
                     <div class="col-md-3">
                         <a class="btn-sec btn-red w-100"
-                           th:href="@{/dashboard/edit/{id}(id=${jobDetails.jobPostId})}"
+                           th:href="@{/dashboard/edit/{id}(id=*{jobPostId})}"
                         >
                             Edit Job
                         </a>
                     </div>
                     <div class="col-md-3" th:if="${jobHasApplies == false && jobHasSaves == false}">
-                        <form th:action="@{/dashboard/delete-job/{id}(id=${jobDetails.jobPostId})}"
-                              th:object="${jobDetails}" method="post"
+                        <form th:action="@{/dashboard/delete-job/{id}(id=*{jobPostId})}"
+                              th:object="${jobPost}" method="post"
                               onsubmit="event.preventDefault(); confirmDelete(this);">
                             <input type="hidden" name="_method" value="delete" />
                             <button class="btn-sec btn-black w-100" type="submit">Delete Job</button>
