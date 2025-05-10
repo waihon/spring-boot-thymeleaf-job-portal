@@ -2,6 +2,7 @@ package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.service.*;
+import com.waihon.springboot.thymeleaf.jobportal.constants.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.waihon.springboot.thymeleaf.jobportal.constants.SecurityConstants.RECRUITER_ROLE;
 
 @Controller
 public class JobSeekerApplyController {
@@ -45,47 +48,58 @@ public class JobSeekerApplyController {
 
     @GetMapping("job-details-apply/{id}")
     public String display(@PathVariable("id") int id, Model model) {
-        JobPostActivity jobDetails = jobPostActivityService.getOne(id);
-        List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getJobCandidates(jobDetails);
-        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getJobCandidates(jobDetails);
-
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))) {
-                RecruiterProfile  user = recruiterProfileService.getCurrentRecruiterProfile();
-                if (user != null) {
-                    model.addAttribute("applyList", jobSeekerApplyList);
-                    model.addAttribute("jobHasApplies", jobSeekerApplyList.size() > 0);
-                    model.addAttribute("jobHasSaves", jobSeekerSaveList.size() > 0);
-                }
-            } else {
-                JobSeekerProfile user = jobSeekerProfileService.getCurrentSeekerProfile();
-                if (user != null) {
-                    boolean applied = false;
-                    for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
-                        if (jobSeekerApply.getUser().getUserAccountId() == user.getUserAccountId()) {
-                            applied = true;
-                            break;
-                        }
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+
+        JobPostActivity jobPost = jobPostActivityService.getOne(id);
+        List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getJobCandidates(jobPost);
+        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getJobCandidates(jobPost);
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority(RECRUITER_ROLE))) {
+            RecruiterProfile  recruiter = recruiterProfileService.getCurrentRecruiterProfile();
+            if (recruiter != null) {
+                // For displaying a list of job seekers who have applifed for job
+                model.addAttribute("jobSeekerApplyList", jobSeekerApplyList);
+                // For determining whether to show Delete job button
+                model.addAttribute("jobHasApplies", jobSeekerApplyList.size() > 0);
+                model.addAttribute("jobHasSaves", jobSeekerSaveList.size() > 0);
+            }
+        } else {
+            JobSeekerProfile jobSeeker = jobSeekerProfileService.getCurrentSeekerProfile();
+            if (jobSeeker != null) {
+                boolean applied = false;
+                for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
+                    if (jobSeekerApply.getUser().getUserAccountId() == jobSeeker.getUserAccountId()) {
+                        applied = true;
+                        break;
                     }
-                    boolean saved = false;
-                    for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
-                        if (jobSeekerSave.getUser().getUserAccountId() == user.getUserAccountId()) {
-                            saved = true;
-                            break;
-                        }
-                    }
-                    model.addAttribute("alreadyApplied", applied);
-                    model.addAttribute("alreadySaved", saved);
                 }
+                boolean saved = false;
+                for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
+                    if (jobSeekerSave.getUser().getUserAccountId() == jobSeeker.getUserAccountId()) {
+                        saved = true;
+                        break;
+                    }
+                }
+                // For displaying Already Applied button instead of Apply Now button
+                model.addAttribute("alreadyApplied", applied);
+                // For displaying Already Saved button instead of Save Job button
+                model.addAttribute("alreadySaved", saved);
+                // For displaying Apply Now and Save Job buttons
+                JobSeekerApply jobSeekerApply = new JobSeekerApply();
+                model.addAttribute("jobSeekerApply", jobSeekerApply);
             }
         }
 
-        JobSeekerApply jobSeekerApply = new JobSeekerApply();
-        model.addAttribute("applyJob", jobSeekerApply);
-
-        model.addAttribute("jobDetails", jobDetails);
-        model.addAttribute("user", userService.getCurrentUserProfile());
+        // For displaying job details
+        model.addAttribute("jobPost", jobPost);
+        // For displaying user information on the header
+        Object user = userService.getCurrentUserProfile();
+        model.addAttribute("user", user);
+        String currentUsername = authentication.getName();
+        model.addAttribute("username", currentUsername);
 
         return "job-details";
     }
