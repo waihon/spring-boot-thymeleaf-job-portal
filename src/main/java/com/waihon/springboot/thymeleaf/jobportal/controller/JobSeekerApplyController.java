@@ -1,6 +1,9 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
+import com.waihon.springboot.thymeleaf.jobportal.exception.JobNotFoundException;
+import com.waihon.springboot.thymeleaf.jobportal.exception.JobSeekerNotFoundException;
+import com.waihon.springboot.thymeleaf.jobportal.exception.UserNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.service.*;
 import com.waihon.springboot.thymeleaf.jobportal.constants.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.Date;
 import java.util.List;
@@ -105,26 +109,38 @@ public class JobSeekerApplyController {
     }
 
     @PostMapping("job-details/apply/{id}")
-    public String apply(@PathVariable("id") int id, JobSeekerApply jobSeekerApply) {
+    public String apply(@PathVariable("id") int id,
+                        JobSeekerApply jobSeekerApply,
+                        RedirectAttributes redirectAttributes) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return null;
+        }
+
+        try {
             String currentUsername = authentication.getName();
             User user = userService.findByEmail(currentUsername);
-            Optional<JobSeekerProfile> seekerProfile = jobSeekerProfileService.getOne(user.getUserId());
+            Optional<JobSeekerProfile> jobSeekerProfile = jobSeekerProfileService.getOne(user.getUserId());
             JobPostActivity jobPostActivity = jobPostActivityService.getOne(id);
-            if (seekerProfile.isPresent() && jobPostActivity != null) {
+
+            if (jobSeekerProfile.isPresent() && jobPostActivity != null) {
                 jobSeekerApply = new JobSeekerApply();
-                jobSeekerApply.setUser(seekerProfile.get());
+                jobSeekerApply.setUser(jobSeekerProfile.get());
                 jobSeekerApply.setJob(jobPostActivity);
                 jobSeekerApply.setApplyDate(new Date());
             } else {
-                throw new RuntimeException("User not found");
+                throw new JobSeekerNotFoundException("Job Seeker not found for ID '" + user.getUserId() + "'.");
             }
 
             jobSeekerApplyService.addNew(jobSeekerApply);
+            redirectAttributes.addFlashAttribute("success", "Job applied successfully.");
+
+        } catch (UserNotFoundException | JobNotFoundException | JobSeekerNotFoundException ex) {
+            redirectAttributes.addFlashAttribute("error", "Could not apply job: " + ex.getMessage());
+            return "redirect:/job-details-apply/" + id;
         }
 
-        return "redirect:/dashboard";
+        return "redirect:/job-details-apply/" + id;
     }
 
 }
