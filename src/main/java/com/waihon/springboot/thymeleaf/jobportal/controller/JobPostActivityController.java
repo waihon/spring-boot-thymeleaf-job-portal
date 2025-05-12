@@ -68,7 +68,7 @@ public class JobPostActivityController {
         model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
         model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
 
-        // Remote
+        // Work model
         model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
         model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
         model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
@@ -96,23 +96,23 @@ public class JobPostActivityController {
             dateSearchFlag = false;
         }
 
-        boolean remoteSearchFlag = true;
+        boolean workModelSearchFlag = true;
         if (partTime == null && fullTime == null && freelance == null) {
             partTime = "Part-time";
             fullTime = "Full-time";
             freelance = "Freelance";
-            remoteSearchFlag = false;
+            workModelSearchFlag = false;
         }
 
-        boolean typeSearchFlag = true;
+        boolean employmentTypeSearchFlag = true;
         if (remoteOnly == null && officeOnly == null && partialRemote == null) {
             remoteOnly = "Remote-Only";
             officeOnly = "Office-Only";
             partialRemote = "Partial-Remote";
-            typeSearchFlag = false;
+            employmentTypeSearchFlag = false;
         }
 
-        if (!dateSearchFlag && !remoteSearchFlag && !typeSearchFlag &&
+        if (!dateSearchFlag && !workModelSearchFlag && !employmentTypeSearchFlag &&
                 !StringUtils.hasText(job) && !StringUtils.hasText(location)) {
             jobPosts = jobPostActivityService.getAll();
         } else {
@@ -194,7 +194,7 @@ public class JobPostActivityController {
         model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
         model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
 
-        // Remote
+        // Work model
         model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
         model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
         model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
@@ -222,23 +222,23 @@ public class JobPostActivityController {
             dateSearchFlag = false;
         }
 
-        boolean remoteSearchFlag = true;
+        boolean workModelSearchFlag = true;
         if (partTime == null && fullTime == null && freelance == null) {
             partTime = "Part-time";
             fullTime = "Full-time";
             freelance = "Freelance";
-            remoteSearchFlag = false;
+            workModelSearchFlag = false;
         }
 
-        boolean typeSearchFlag = true;
+        boolean employmentTypeSearchFlag = true;
         if (remoteOnly == null && officeOnly == null && partialRemote == null) {
             remoteOnly = "Remote-Only";
             officeOnly = "Office-Only";
             partialRemote = "Partial-Remote";
-            typeSearchFlag = false;
+            employmentTypeSearchFlag = false;
         }
 
-        if (!dateSearchFlag && !remoteSearchFlag && !typeSearchFlag &&
+        if (!dateSearchFlag && !workModelSearchFlag && !employmentTypeSearchFlag &&
                 !StringUtils.hasText(job) && !StringUtils.hasText(location)) {
             jobPosts = jobPostActivityService.getAll();
         } else {
