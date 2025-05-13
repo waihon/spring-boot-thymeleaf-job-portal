@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
+import com.waihon.springboot.thymeleaf.jobportal.dto.SearchFilter;
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.enums.CrudMode;
 import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
@@ -63,8 +64,11 @@ public class JobPostActivityController {
     ) {
         model.addAttribute("currentPage", "dashboard");
 
-        saveSearchAttributes(model, partTime, fullTime, freelance, remoteOnly, officeOnly, partialRemote,
+        SearchFilter searchFilter = new SearchFilter(partTime, fullTime, freelance,
+                remoteOnly, officeOnly, partialRemote,
                 today, days7, days30, job, location);
+
+        saveSearchAttributes(model, searchFilter);
 
         LocalDate searchDate = null;
         List<JobPostActivity> jobPosts = null;
