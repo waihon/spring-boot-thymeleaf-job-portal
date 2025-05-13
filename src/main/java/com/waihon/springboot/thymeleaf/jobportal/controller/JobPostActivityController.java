@@ -63,24 +63,8 @@ public class JobPostActivityController {
     ) {
         model.addAttribute("currentPage", "dashboard");
 
-        // Employment type
-        model.addAttribute("partTime", Objects.equals(partTime, "Part-time"));
-        model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
-        model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
-
-        // Work model
-        model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
-        model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
-        model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
-
-        // Date posted
-        model.addAttribute("today", today);
-        model.addAttribute("days7", days7);
-        model.addAttribute("days30", days30);
-
-        // Search boxes
-        model.addAttribute("job", job);
-        model.addAttribute("location", location);
+        saveSearchAttributes(model, partTime, fullTime, freelance, remoteOnly, officeOnly, partialRemote,
+                today, days7, days30, job, location);
 
         LocalDate searchDate = null;
         List<JobPostActivity> jobPosts = null;
@@ -189,24 +173,8 @@ public class JobPostActivityController {
                                @RequestParam(value = "today", required = false) boolean today,
                                @RequestParam(value = "days7", required = false) boolean days7,
                                @RequestParam(value = "days30", required = false) boolean days30 ) {
-        // Employment type
-        model.addAttribute("partTime", Objects.equals(partTime, "Part-time"));
-        model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
-        model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
-
-        // Work model
-        model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
-        model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
-        model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
-
-        // Date posted
-        model.addAttribute("today", today);
-        model.addAttribute("days7", days7);
-        model.addAttribute("days30", days30);
-
-        // Search boxes
-        model.addAttribute("job", job);
-        model.addAttribute("location", location);
+        saveSearchAttributes(model, partTime, fullTime, freelance, remoteOnly, officeOnly, partialRemote,
+                today, days7, days30, job, location);
 
         LocalDate searchDate = null;
         List<JobPostActivity> jobPosts = null;
@@ -305,28 +273,6 @@ public class JobPostActivityController {
         return "redirect:/dashboard";
     }
 
-    private String resolveReturnUrl(HttpServletRequest request, CrudMode mode) {
-        String referer = request.getHeader("Referer");
-        String returnUrl;
-        if (mode == CrudMode.CREATE)
-            returnUrl = (referer != null && !referer.endsWith("/dashboard/add") &&
-                    !referer.endsWith("/dashboard/add-new"))
-                    ? referer
-                    : "/dashboard"; // Default fallback
-        else {
-            Integer jobId = StringUtil.extractLastNumber(referer);
-            returnUrl = (referer != null && !referer.contains("/dashboard/edit") &&
-                    !referer.contains("/dashboard/save-edit"))
-                    ? referer
-                    : (jobId != null ? "/job-details-apply/" + jobId : "/dashboard"); // Default fallback
-        }
-
-        System.out.println("referer: " + referer);
-        System.out.println("refernUrl: " + returnUrl);
-
-        return returnUrl;
-    }
-
     public String saveJob(Integer jobId,
                           @Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
                           BindingResult result,
@@ -355,6 +301,52 @@ public class JobPostActivityController {
         JobPostActivity saved = jobPostActivityService.addNew(jobPostActivity);
 
         return "redirect:/dashboard";
+    }
+
+    private String resolveReturnUrl(HttpServletRequest request, CrudMode mode) {
+        String referer = request.getHeader("Referer");
+        String returnUrl;
+        if (mode == CrudMode.CREATE)
+            returnUrl = (referer != null && !referer.endsWith("/dashboard/add") &&
+                    !referer.endsWith("/dashboard/add-new"))
+                    ? referer
+                    : "/dashboard"; // Default fallback
+        else {
+            Integer jobId = StringUtil.extractLastNumber(referer);
+            returnUrl = (referer != null && !referer.contains("/dashboard/edit") &&
+                    !referer.contains("/dashboard/save-edit"))
+                    ? referer
+                    : (jobId != null ? "/job-details-apply/" + jobId : "/dashboard"); // Default fallback
+        }
+
+        System.out.println("referer: " + referer);
+        System.out.println("refernUrl: " + returnUrl);
+
+        return returnUrl;
+    }
+
+    private void saveSearchAttributes(Model model, String partTime, String fullTime, String freelance,
+                                      String remoteOnly, String officeOnly, String partialRemote,
+                                      boolean today, boolean days7, boolean days30,
+                                      String job, String location) {
+        // Employment type
+        model.addAttribute("partTime", Objects.equals(partTime, "Part-time"));
+        model.addAttribute("fullTime", Objects.equals(fullTime, "Full-time"));
+        model.addAttribute("freelance", Objects.equals(freelance, "Freelance"));
+
+        // Work model
+        model.addAttribute("remoteOnly", Objects.equals(remoteOnly, "Remote-Only"));
+        model.addAttribute("officeOnly", Objects.equals(officeOnly, "Office-Only"));
+        model.addAttribute("partialRemote", Objects.equals(partialRemote, "Partial-Remote"));
+
+        // Date posted
+        model.addAttribute("today", today);
+        model.addAttribute("days7", days7);
+        model.addAttribute("days30", days30);
+
+        // Search boxes
+        model.addAttribute("job", job);
+        model.addAttribute("location", location);
     }
 
 }
