@@ -16,6 +16,9 @@ public class SearchFilter {
     private String job;
     private String location;
 
+    public SearchFilter() {
+    }
+
     public SearchFilter(String partTime, String fullTime, String freelance,
                         String remoteOnly, String officeOnly, String partialRemote,
                         boolean today, boolean days7, boolean days30,

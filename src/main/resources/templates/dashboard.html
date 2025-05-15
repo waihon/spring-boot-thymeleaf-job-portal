@@ -26,7 +26,7 @@
         <div sec:authorize="hasAuthority('Job Seeker')">
             <label class="text-uppercase color-dull font-weight-bold">Filter Results</label>
             <hr />
-            <form id="myForm" th:action="@{/dashboard}">
+            <form id="myForm" th:action="@{/dashboard}" th:object="${searchFilter}" method="get">
                 <div th:replace="~{layouts/sidebar :: search}"></div>
             </form>
         </div>
