@@ -51,24 +51,9 @@ public class JobPostActivityController {
     }
 
     @GetMapping("/dashboard")
-    public String searchJobs(Model model,
-                             @RequestParam(value = "job", required = false) String job,
-                             @RequestParam(value = "location", required = false) String location,
-                             @RequestParam(value = "partTime", required = false) String partTime,
-                             @RequestParam(value = "fullTime", required = false) String fullTime,
-                             @RequestParam(value = "freelance", required = false) String freelance,
-                             @RequestParam(value = "remoteOnly", required = false) String remoteOnly,
-                             @RequestParam(value = "officeOnly", required = false) String officeOnly,
-                             @RequestParam(value = "partialRemote", required = false) String partialRemote,
-                             @RequestParam(value = "today", required = false) boolean today,
-                             @RequestParam(value = "days7", required = false) boolean days7,
-                             @RequestParam(value = "days30", required = false) boolean days30
-    ) {
-        model.addAttribute("currentPage", "dashboard");
+    public String searchJobs(@ModelAttribute SearchFilter searchFilter, Model model) {
 
-        SearchFilter searchFilter = new SearchFilter(partTime, fullTime, freelance,
-                remoteOnly, officeOnly, partialRemote,
-                today, days7, days30, job, location);
+        model.addAttribute("currentPage", "dashboard");
 
         saveSearchAttributes(model, searchFilter);
 
@@ -144,22 +129,7 @@ public class JobPostActivityController {
     }
 
     @GetMapping("/global-search")
-    public String globalSearch(Model model,
-                               @RequestParam(value = "job", required = false) String job,
-                               @RequestParam(value = "location", required = false) String location,
-                               @RequestParam(value = "partTime", required = false) String partTime,
-                               @RequestParam(value = "fullTime", required = false) String fullTime,
-                               @RequestParam(value = "freelance", required = false) String freelance,
-                               @RequestParam(value = "remoteOnly", required = false) String remoteOnly,
-                               @RequestParam(value = "officeOnly", required = false) String officeOnly,
-                               @RequestParam(value = "partialRemote", required = false) String partialRemote,
-                               @RequestParam(value = "today", required = false) boolean today,
-                               @RequestParam(value = "days7", required = false) boolean days7,
-                               @RequestParam(value = "days30", required = false) boolean days30 ) {
-        SearchFilter searchFilter = new SearchFilter(partTime, fullTime, freelance,
-                remoteOnly, officeOnly, partialRemote,
-                today, days7, days30, job, location);
-
+    public String globalSearch(@ModelAttribute SearchFilter searchFilter, Model model) {
         saveSearchAttributes(model, searchFilter);
 
         LocalDate searchDate = resolveSearchDate(searchFilter);
@@ -265,6 +235,11 @@ public class JobPostActivityController {
         JobPostActivity saved = jobPostActivityService.addNew(jobPostActivity);
 
         return "redirect:/dashboard";
+    }
+
+    @ModelAttribute
+    public SearchFilter defaultSearchFilter() {
+        return new SearchFilter(); // with defaults if desired
     }
 
     private String resolveReturnUrl(HttpServletRequest request, CrudMode mode) {

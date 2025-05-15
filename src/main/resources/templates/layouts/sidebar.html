@@ -8,7 +8,7 @@
                         type="checkbox"
                         id="Part-time"
                         name="partTime"
-                        th:checked="${partTime}"
+                        th:checked="*{partTime}"
                         th:value="Part-time"
                 />
                 <label class="form-check-label" for="Part-time">
@@ -21,7 +21,7 @@
                         type="checkbox"
                         id="full-time"
                         name="fullTime"
-                        th:checked="${fullTime}"
+                        th:checked="*{fullTime}"
                         th:value="Full-time"
                 />
                 <label class="form-check-label" for="full-time">
@@ -34,7 +34,7 @@
                         type="checkbox"
                         id="freelance"
                         name="freelance"
-                        th:checked="${freelance}"
+                        th:checked="*{freelance}"
                         th:value="Freelance"
                 />
                 <label class="form-check-label" for="freelance">
@@ -50,7 +50,7 @@
                         type="checkbox"
                         id="remote-only"
                         name="remoteOnly"
-                        th:checked="${remoteOnly}"
+                        th:checked="*{remoteOnly}"
                         th:value="Remote-Only"
                 />
                 <label class="form-check-label" for="remote-only">
@@ -63,7 +63,7 @@
                         type="checkbox"
                         id="Office-Only"
                         name="officeOnly"
-                        th:checked="${officeOnly}"
+                        th:checked="*{officeOnly}"
                         th:value="Office-Only"
                 />
                 <label class="form-check-label" for="Office-Only">
@@ -76,7 +76,7 @@
                         type="checkbox"
                         id="partial-remote"
                         name="partialRemote"
-                        th:checked="${partialRemote}"
+                        th:checked="*{partialRemote}"
                         th:value="Partial-Remote"
                 />
                 <label class="form-check-label" for="partial-remote">
@@ -93,7 +93,7 @@
                         type="checkbox"
                         id="today"
                         name="today"
-                        th:checked="${today}"
+                        th:checked="*{today}"
                 />
                 <label class="form-check-label" for="today"> Today </label>
             </div>
@@ -103,7 +103,7 @@
                         type="checkbox"
                         id="7days"
                         name="days7"
-                        th:checked="${days7}"
+                        th:checked="*{days7}"
                 />
                 <label class="form-check-label" for="7days">
                     Last 7 Days
@@ -115,7 +115,7 @@
                         type="checkbox"
                         id="30days"
                         name="days30"
-                        th:checked="${days30}"
+                        th:checked="*{days30}"
                 />
                 <label class="form-check-label" for="30days">
                     Last 30 Days
@@ -123,6 +123,6 @@
             </div>
         </div>
     </div>
-    <input id="hidJob" name="job" th:value="${job}" hidden>
-    <input id="hidLoc" name="location" th:value="${location}" hidden>
+    <input id="hidJob" name="job" th:value="*{job}" hidden>
+    <input id="hidLoc" name="location" th:value="*{location}" hidden>
 </div>
