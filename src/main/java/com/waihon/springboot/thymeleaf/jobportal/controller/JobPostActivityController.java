@@ -72,44 +72,21 @@ public class JobPostActivityController {
 
         saveSearchAttributes(model, searchFilter);
 
-        LocalDate searchDate = null;
-        List<JobPostActivity> jobPosts = null;
-        boolean dateSearchFlag = true;
+        LocalDate searchDate = resolveSearchDate(searchFilter);
+        List<String> employmentTypes = resolveEmploymentTypes(searchFilter);
+        List<String> workModels = resolveWorkModels(searchFilter);
 
-        if (days30) {
-            searchDate = LocalDate.now().minusDays(30);
-        } else if (days7) {
-            searchDate = LocalDate.now().minusDays(7);
-        } else if (today) {
-            searchDate = LocalDate.now();
-        } else {
-            dateSearchFlag = false;
-        }
+        boolean isEmptySearch = isSearchEmpty(searchFilter, searchDate, employmentTypes, workModels);
 
-        boolean workModelSearchFlag = true;
-        if (partTime == null && fullTime == null && freelance == null) {
-            partTime = "Part-time";
-            fullTime = "Full-time";
-            freelance = "Freelance";
-            workModelSearchFlag = false;
-        }
-
-        boolean employmentTypeSearchFlag = true;
-        if (remoteOnly == null && officeOnly == null && partialRemote == null) {
-            remoteOnly = "Remote-Only";
-            officeOnly = "Office-Only";
-            partialRemote = "Partial-Remote";
-            employmentTypeSearchFlag = false;
-        }
-
-        if (!dateSearchFlag && !workModelSearchFlag && !employmentTypeSearchFlag &&
-                !StringUtils.hasText(job) && !StringUtils.hasText(location)) {
-            jobPosts = jobPostActivityService.getAll();
-        } else {
-            jobPosts = jobPostActivityService.search(job, location,
-                    Arrays.asList(partTime, fullTime, freelance),
-                    Arrays.asList(remoteOnly, officeOnly, partialRemote), searchDate);
-        }
+        List<JobPostActivity> jobPosts = isEmptySearch
+                ? jobPostActivityService.getAll()
+                : jobPostActivityService.search(
+                searchFilter.getJob(),
+                searchFilter.getLocation(),
+                employmentTypes,
+                workModels,
+                searchDate
+        );
 
         Object currentUserProfile = userService.getCurrentUserProfile();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -365,6 +342,5 @@ public class JobPostActivityController {
                 !StringUtils.hasText(filter.getJob()) &&
                 !StringUtils.hasText(filter.getLocation());
     }
-
 
 }
