@@ -40,43 +40,87 @@ public class SearchFilter {
         return partTime;
     }
 
+    public void setPartTime(String partTime) {
+        this.partTime = partTime;
+    }
+
     public String getFullTime() {
         return fullTime;
+    }
+
+    public void setFullTime(String fullTime) {
+        this.fullTime = fullTime;
     }
 
     public String getFreelance() {
         return freelance;
     }
 
+    public void setFreelance(String freelance) {
+        this.freelance = freelance;
+    }
+
     public String getRemoteOnly() {
         return remoteOnly;
+    }
+
+    public void setRemoteOnly(String remoteOnly) {
+        this.remoteOnly = remoteOnly;
     }
 
     public String getOfficeOnly() {
         return officeOnly;
     }
 
+    public void setOfficeOnly(String officeOnly) {
+        this.officeOnly = officeOnly;
+    }
+
     public String getPartialRemote() {
         return partialRemote;
+    }
+
+    public void setPartialRemote(String partialRemote) {
+        this.partialRemote = partialRemote;
     }
 
     public boolean isToday() {
         return today;
     }
 
+    public void setToday(boolean today) {
+        this.today = today;
+    }
+
     public boolean isDays7() {
         return days7;
+    }
+
+    public void setDays7(boolean days7) {
+        this.days7 = days7;
     }
 
     public boolean isDays30() {
         return days30;
     }
 
+    public void setDays30(boolean days30) {
+        this.days30 = days30;
+    }
+
     public String getJob() {
         return job;
     }
 
+    public void setJob(String job) {
+        this.job = job;
+    }
+
     public String getLocation() {
         return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }
