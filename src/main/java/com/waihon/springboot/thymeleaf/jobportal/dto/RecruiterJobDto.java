@@ -1,4 +1,7 @@
-package com.waihon.springboot.thymeleaf.jobportal.entity;
+package com.waihon.springboot.thymeleaf.jobportal.dto;
+
+import com.waihon.springboot.thymeleaf.jobportal.entity.JobCompany;
+import com.waihon.springboot.thymeleaf.jobportal.entity.JobLocation;
 
 public class RecruiterJobDto {
 
