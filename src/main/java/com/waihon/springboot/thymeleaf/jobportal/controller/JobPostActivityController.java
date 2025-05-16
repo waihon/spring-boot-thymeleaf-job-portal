@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
+import com.waihon.springboot.thymeleaf.jobportal.dto.RecruiterJobDto;
 import com.waihon.springboot.thymeleaf.jobportal.dto.SearchFilter;
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.enums.CrudMode;
@@ -10,7 +11,6 @@ import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
 import com.waihon.springboot.thymeleaf.jobportal.util.StringUtil;
 import com.waihon.springboot.thymeleaf.jobportal.validation.ValidationSequence;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

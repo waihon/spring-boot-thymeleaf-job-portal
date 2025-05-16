@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.service;
 
+import com.waihon.springboot.thymeleaf.jobportal.dto.RecruiterJobDto;
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.exception.JobNotFoundException;
 import com.waihon.springboot.thymeleaf.jobportal.repository.JobPostActivityRepository;
