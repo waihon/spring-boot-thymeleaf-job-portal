@@ -5,10 +5,7 @@ import com.waihon.springboot.thymeleaf.jobportal.dto.RecruiterJobDto;
 import com.waihon.springboot.thymeleaf.jobportal.dto.SearchFilter;
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
 import com.waihon.springboot.thymeleaf.jobportal.enums.CrudMode;
-import com.waihon.springboot.thymeleaf.jobportal.service.JobPostActivityService;
-import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerApplyService;
-import com.waihon.springboot.thymeleaf.jobportal.service.JobSeekerSaveService;
-import com.waihon.springboot.thymeleaf.jobportal.service.UserService;
+import com.waihon.springboot.thymeleaf.jobportal.service.*;
 import com.waihon.springboot.thymeleaf.jobportal.util.StringUtil;
 import com.waihon.springboot.thymeleaf.jobportal.validation.ValidationSequence;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,16 +35,19 @@ public class JobPostActivityController {
     private final JobPostActivityService jobPostActivityService;
     private final JobSeekerApplyService jobSeekerApplyService;
     private final JobSeekerSaveService jobSeekerSaveService;
+    private final JobPostStatusService jobPostStatusService;
 
     @Autowired
     public JobPostActivityController(UserService userService,
                                      JobPostActivityService jobPostActivityService,
                                      JobSeekerApplyService jobSeekerApplyService,
-                                     JobSeekerSaveService jobSeekerSaveService) {
+                                     JobSeekerSaveService jobSeekerSaveService,
+                                     JobPostStatusService jobPostStatusService) {
         this.userService = userService;
         this.jobPostActivityService = jobPostActivityService;
         this.jobSeekerApplyService = jobSeekerApplyService;
         this.jobSeekerSaveService = jobSeekerSaveService;
+        this.jobPostStatusService = jobPostStatusService;
     }
 
     @GetMapping("/dashboard")
@@ -84,7 +84,7 @@ public class JobPostActivityController {
             );
             model.addAttribute("jobPosts", jobPosts);
 
-            markJobPostStatuses(jobPosts, currentUserProfile);
+            jobPostStatusService.markStatuses(jobPosts, currentUserProfile);
 
         }
 
@@ -120,7 +120,6 @@ public class JobPostActivityController {
 
         return "global-search";
     }
-
 
     @GetMapping("/dashboard/add")
     public String addJobs(Model model, HttpServletRequest request) {
@@ -284,29 +283,6 @@ public class JobPostActivityController {
                 models.size() == 3 &&
                 !StringUtils.hasText(filter.getJob()) &&
                 !StringUtils.hasText(filter.getLocation());
-    }
-
-    private void markJobPostStatuses(List<JobPostActivity> jobPosts, Object currentUserProfile) {
-        JobSeekerProfile seekerProfile = (JobSeekerProfile) currentUserProfile;
-
-        List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getCandidateJobs(seekerProfile);
-        Set<Integer> appliedJobIds = jobSeekerApplyList
-                .stream()
-                .map(apply -> apply.getJob().getJobPostId())
-                .collect(Collectors.toSet());
-
-        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getCandidateJobs(seekerProfile);
-        Set<Integer> savedJobIds = jobSeekerSaveList
-                .stream()
-                .map(save -> save.getJob().getJobPostId())
-                .collect(Collectors.toSet());
-
-        for (JobPostActivity jobPost : jobPosts) {
-            Integer postId = jobPost.getJobPostId();
-            jobPost.setActive(appliedJobIds.contains(postId));
-            jobPost.setSaved(savedJobIds.contains(postId));
-        }
-
     }
 
 }
