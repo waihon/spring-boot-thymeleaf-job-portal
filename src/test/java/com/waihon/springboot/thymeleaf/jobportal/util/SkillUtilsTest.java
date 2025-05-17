@@ -1,7 +1,6 @@
-package com.waihon.springboot.thymeleaf.jobportal.test;
+package com.waihon.springboot.thymeleaf.jobportal.util;
 
 import com.waihon.springboot.thymeleaf.jobportal.entity.Skill;
-import com.waihon.springboot.thymeleaf.jobportal.util.SkillUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
