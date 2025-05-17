@@ -174,12 +174,17 @@ public class JobPostActivityController {
         return "redirect:/dashboard";
     }
 
-    public String saveJob(Integer jobId,
-                          @Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
-                          BindingResult result,
-                          Model model,
-                          HttpServletRequest request,
-                          CrudMode mode) {
+    @ModelAttribute
+    public SearchFilter defaultSearchFilter() {
+        return new SearchFilter(); // with defaults if desired
+    }
+
+    private String saveJob(Integer jobId,
+                           @Validated(ValidationSequence.class) @ModelAttribute("jobPostActivity") JobPostActivity jobPostActivity,
+                           BindingResult result,
+                           Model model,
+                           HttpServletRequest request,
+                           CrudMode mode) {
         if (result.hasErrors()) {
             result.getAllErrors().forEach(err ->
                     System.out.println("❗ Validation error: " + err.getDefaultMessage())
@@ -202,11 +207,6 @@ public class JobPostActivityController {
         JobPostActivity saved = jobPostActivityService.addNew(jobPostActivity);
 
         return "redirect:/dashboard";
-    }
-
-    @ModelAttribute
-    public SearchFilter defaultSearchFilter() {
-        return new SearchFilter(); // with defaults if desired
     }
 
     private String resolveReturnUrl(HttpServletRequest request, CrudMode mode) {
