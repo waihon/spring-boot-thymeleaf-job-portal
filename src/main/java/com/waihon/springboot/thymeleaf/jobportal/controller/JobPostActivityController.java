@@ -1,5 +1,6 @@
 package com.waihon.springboot.thymeleaf.jobportal.controller;
 
+import com.waihon.springboot.thymeleaf.jobportal.constants.SecurityConstants;
 import com.waihon.springboot.thymeleaf.jobportal.dto.RecruiterJobDto;
 import com.waihon.springboot.thymeleaf.jobportal.dto.SearchFilter;
 import com.waihon.springboot.thymeleaf.jobportal.entity.*;
@@ -24,12 +25,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static com.waihon.springboot.thymeleaf.jobportal.constants.SecurityConstants.RECRUITER_ROLE;
 
 @Controller
 public class JobPostActivityController {
@@ -52,77 +52,45 @@ public class JobPostActivityController {
 
     @GetMapping("/dashboard")
     public String searchJobs(@ModelAttribute SearchFilter searchFilter, Model model) {
-
-        model.addAttribute("currentPage", "dashboard");
-
-        saveSearchAttributes(model, searchFilter);
-
-        LocalDate searchDate = resolveSearchDate(searchFilter);
-        List<String> employmentTypes = resolveEmploymentTypes(searchFilter);
-        List<String> workModels = resolveWorkModels(searchFilter);
-
-        boolean isEmptySearch = isSearchEmpty(searchFilter, searchDate, employmentTypes, workModels);
-
-        List<JobPostActivity> jobPosts = isEmptySearch
-                ? jobPostActivityService.getAll()
-                : jobPostActivityService.search(
-                searchFilter.getJob(),
-                searchFilter.getLocation(),
-                employmentTypes,
-                workModels,
-                searchDate
-        );
-
-        Object currentUserProfile = userService.getCurrentUserProfile();
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (!(authentication instanceof AnonymousAuthenticationToken)) {
-            String currentUsername = authentication.getName();
-            model.addAttribute("username", currentUsername);
-            if (authentication.getAuthorities().contains(new SimpleGrantedAuthority("Recruiter"))) {
-                int recruiter = ((RecruiterProfile)currentUserProfile).getUserAccountId();
-                List<RecruiterJobDto> recruiterJobDtos = jobPostActivityService.getRecruiterJobs(recruiter);
-                model.addAttribute("jobPosts", recruiterJobDtos);
-            } else {
-                List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
-                        .getCandidateJobs((JobSeekerProfile) currentUserProfile);
-                List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService
-                        .getCandidateJobs((JobSeekerProfile) currentUserProfile);
-
-                boolean exist;
-                boolean saved;
-
-                for (JobPostActivity jobPost : jobPosts) {
-                    exist = false;
-                    for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
-                        if (Objects.equals(jobPost.getJobPostId(), jobSeekerApply.getJob().getJobPostId())) {
-                            jobPost.setActive(true);
-                            exist = true;
-                            break;
-                        }
-                    }
-
-                    saved = false;
-                    for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
-                        if (Objects.equals(jobPost.getJobPostId(), jobSeekerSave.getJob().getJobPostId())) {
-                            jobPost.setSaved(true);
-                            saved = true;
-                            break;
-                        }
-                    }
-
-                    if (!exist) {
-                        jobPost.setActive(false);
-                    }
-                    if (!saved) {
-                        jobPost.setSaved(false);
-                    }
-
-                    model.addAttribute("jobPosts", jobPosts);
-                }
-            }
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            return null;
         }
 
+        String currentUsername = authentication.getName();
+        Object currentUserProfile = userService.getCurrentUserProfile();
+
+        if (authentication.getAuthorities().contains(new SimpleGrantedAuthority(RECRUITER_ROLE))) {
+            int recruiterId = ((RecruiterProfile)currentUserProfile).getUserAccountId();
+
+            List<RecruiterJobDto> recruiterJobDtos = jobPostActivityService.getRecruiterJobs(recruiterId);
+
+            model.addAttribute("jobPosts", recruiterJobDtos);
+        } else {
+            LocalDate searchDate = resolveSearchDate(searchFilter);
+            List<String> employmentTypes = resolveEmploymentTypes(searchFilter);
+            List<String> workModels = resolveWorkModels(searchFilter);
+
+            boolean isEmptySearch = isSearchEmpty(searchFilter, searchDate, employmentTypes, workModels);
+
+            List<JobPostActivity> jobPosts = isEmptySearch
+                    ? jobPostActivityService.getAll()
+                    : jobPostActivityService.search(
+                    searchFilter.getJob(),
+                    searchFilter.getLocation(),
+                    employmentTypes,
+                    workModels,
+                    searchDate
+            );
+            model.addAttribute("jobPosts", jobPosts);
+
+            markJobPostStatuses(jobPosts, currentUserProfile);
+
+        }
+
+        saveSearchAttributes(model, searchFilter);
+        model.addAttribute("currentPage", "dashboard");
+        model.addAttribute("username", currentUsername);
         model.addAttribute("user", currentUserProfile);
 
         return "dashboard";
@@ -317,5 +285,44 @@ public class JobPostActivityController {
                 !StringUtils.hasText(filter.getJob()) &&
                 !StringUtils.hasText(filter.getLocation());
     }
+
+    private void markJobPostStatuses(List<JobPostActivity> jobPosts, Object currentUserProfile) {
+        List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
+                .getCandidateJobs((JobSeekerProfile) currentUserProfile);
+        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService
+                .getCandidateJobs((JobSeekerProfile) currentUserProfile);
+
+        boolean exist;
+        boolean saved;
+
+        for (JobPostActivity jobPost : jobPosts) {
+            exist = false;
+            for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
+                if (Objects.equals(jobPost.getJobPostId(), jobSeekerApply.getJob().getJobPostId())) {
+                    jobPost.setActive(true);
+                    exist = true;
+                    break;
+                }
+            }
+
+            saved = false;
+            for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
+                if (Objects.equals(jobPost.getJobPostId(), jobSeekerSave.getJob().getJobPostId())) {
+                    jobPost.setSaved(true);
+                    saved = true;
+                    break;
+                }
+            }
+
+            if (!exist) {
+                jobPost.setActive(false);
+            }
+            if (!saved) {
+                jobPost.setSaved(false);
+            }
+
+        }
+    }
+
 
 }
