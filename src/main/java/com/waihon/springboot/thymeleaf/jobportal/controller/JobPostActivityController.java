@@ -287,42 +287,26 @@ public class JobPostActivityController {
     }
 
     private void markJobPostStatuses(List<JobPostActivity> jobPosts, Object currentUserProfile) {
-        List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService
-                .getCandidateJobs((JobSeekerProfile) currentUserProfile);
-        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService
-                .getCandidateJobs((JobSeekerProfile) currentUserProfile);
+        JobSeekerProfile seekerProfile = (JobSeekerProfile) currentUserProfile;
 
-        boolean exist;
-        boolean saved;
+        List<JobSeekerApply> jobSeekerApplyList = jobSeekerApplyService.getCandidateJobs(seekerProfile);
+        Set<Integer> appliedJobIds = jobSeekerApplyList
+                .stream()
+                .map(apply -> apply.getJob().getJobPostId())
+                .collect(Collectors.toSet());
+
+        List<JobSeekerSave> jobSeekerSaveList = jobSeekerSaveService.getCandidateJobs(seekerProfile);
+        Set<Integer> savedJobIds = jobSeekerSaveList
+                .stream()
+                .map(save -> save.getJob().getJobPostId())
+                .collect(Collectors.toSet());
 
         for (JobPostActivity jobPost : jobPosts) {
-            exist = false;
-            for (JobSeekerApply jobSeekerApply : jobSeekerApplyList) {
-                if (Objects.equals(jobPost.getJobPostId(), jobSeekerApply.getJob().getJobPostId())) {
-                    jobPost.setActive(true);
-                    exist = true;
-                    break;
-                }
-            }
-
-            saved = false;
-            for (JobSeekerSave jobSeekerSave : jobSeekerSaveList) {
-                if (Objects.equals(jobPost.getJobPostId(), jobSeekerSave.getJob().getJobPostId())) {
-                    jobPost.setSaved(true);
-                    saved = true;
-                    break;
-                }
-            }
-
-            if (!exist) {
-                jobPost.setActive(false);
-            }
-            if (!saved) {
-                jobPost.setSaved(false);
-            }
-
+            Integer postId = jobPost.getJobPostId();
+            jobPost.setActive(appliedJobIds.contains(postId));
+            jobPost.setSaved(savedJobIds.contains(postId));
         }
-    }
 
+    }
 
 }
